@@ -12,7 +12,7 @@
 package Model;
 import java.util.ArrayList;
 import java.util.PriorityQueue;
-
+//ayre b jocelyn
 public class AStar {
 	private static int mapSize = 25;
 	private boolean closed[][];

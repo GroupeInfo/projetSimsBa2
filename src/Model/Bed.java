@@ -5,9 +5,11 @@ import View.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 public class Bed extends GameObject implements Attachable, Activable{
-	private int energy = 20;
+	private int energy = 40;
 	private Player p;
 	private Game g;
+	private static int count = 0;
+	private static int count1 = 0;
 	public Bed(int X, int Y, Player player, int widthIntRatio, int heightIntRatio, Game g) {
 		super(X,Y,6, widthIntRatio, heightIntRatio);
 		this.p = player;
@@ -19,42 +21,45 @@ public class Bed extends GameObject implements Attachable, Activable{
 		 
 		 Timer timer = new Timer();
 		 TimerTask task = new TimerTask() {
-			 int count = 0;
 				public void run() {
-				if(count >= 1) {
+				if(count1 >= 1) {
 				timer.cancel();
 				StartAndEnd();}
 				g.removePlayerFromObjects(p);
 				g.addPlayerToSleepingObjects(p);
 				p.setSleepingState();
-				;
-				count++;
+				count1++;
 				
 			}
 				
 			      };
-			timer.schedule(task,0);  
+			timer.schedule(task,0,1000);  
 			
 		}
 	 
+	 public int getBedEnergy() {
+		 return(this.energy);
+	 }
+	 
 	 public void StartAndEnd() {
 		 Timer destimer = new Timer();
-		
 		 TimerTask desTask = new TimerTask() {
+			 
 			 public void run() {
-				 int count = 0;
-				 if(count >=21) {
+				 if(count >=5) {
 					 p.setAwakeState();
+					 p.addEnergy(getBedEnergy());
 					 g.removePlayerFromSleepingObjects(p);
 					 g.addPlayerToObjects(p);
 					 destimer.cancel();
+					 count = 0;
 				 }
 				 else {
 					 count++;	 
 				 }
 			 }
 		 };
-		 destimer.schedule(desTask,0,1000);  
+		 destimer.schedule(desTask,0,1000);
 	 }
 	 
 

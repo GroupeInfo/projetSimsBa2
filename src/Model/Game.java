@@ -39,8 +39,9 @@ public class Game implements DeletableObserver {
         active_player = p;
         
         Bed b = new Bed(1,1,p,3,3, this);
+        Door d1 = new Door(6,7,0);
         objects.add(b); 
-        
+        objects.add(d1);
         for(int i = 0; i<5; i++) {
         createEnergyCoins();
         createApples();
@@ -151,8 +152,8 @@ public class Game implements DeletableObserver {
     }
     
     public boolean SleepingStateOfPlayer() {
-    	boolean z = this.active_player.isSleeping();
-    	 return z;
+    	boolean z = this.active_player.getSleepingState();
+    	return z;
     	 }
     	 
     public void createEnergyCoins() {
@@ -308,6 +309,7 @@ public class Game implements DeletableObserver {
     public void action() {
         Activable aimedObject = null;//initianliser aimedobject a null et puis on changera si un peu (dnas le deuxieme if) 
 		for(GameObject object : objects){
+			
 			if(object instanceof Bed) {
 				boolean z = ObstacleIsBed((Bed) object,active_player.getFrontX() , active_player.getFrontY());
 				if(z == true) {

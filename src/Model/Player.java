@@ -109,7 +109,7 @@ public class Player extends GameObject implements Directable {
 		SleepingState = false;
 	}
 	
-	public boolean isSleeping() {
+	public boolean getSleepingState() {
 		return SleepingState;
 	}
 	
