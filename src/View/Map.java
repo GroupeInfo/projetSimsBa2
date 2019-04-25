@@ -137,7 +137,43 @@ public class Map extends JPanel {
             g.drawImage(image, x*BLOC_SIZE, y*BLOC_SIZE, w*BLOC_SIZE1,  h*BLOC_SIZE , null);
         }
                
-        	
+        icon = new ImageIcon("Resources/pommes.jpeg");
+        image = icon.getImage();
+        g.drawImage(image, 20*BLOC_SIZE, 3*BLOC_SIZE, BLOC_SIZE1,  BLOC_SIZE1, null);
+        
+        icon = new ImageIcon("Resources/tvvv.png");
+        image = icon.getImage();
+        g.drawImage(image, 17*BLOC_SIZE, 1*BLOC_SIZE, 2*BLOC_SIZE1,  2*BLOC_SIZE1, null);
+        
+        icon = new ImageIcon("Resources/bathh.PNG");
+        image = icon.getImage();
+        g.drawImage(image, 4*BLOC_SIZE, 21*BLOC_SIZE, 5*BLOC_SIZE1,  3*BLOC_SIZE1, null);
+        
+        icon = new ImageIcon("Resources/wash.PNG");
+        image = icon.getImage();
+        g.drawImage(image, 1*BLOC_SIZE, 16*BLOC_SIZE, 2*BLOC_SIZE1,  2*BLOC_SIZE1, null);
+       
+        icon = new ImageIcon("Resources/hanafie.png");
+        image = icon.getImage();
+        g.drawImage(image, 21*BLOC_SIZE, 22*BLOC_SIZE, 3*BLOC_SIZE1,  2*BLOC_SIZE1, null);
+        
+        icon = new ImageIcon("Resources/gaz.PNG");
+        image = icon.getImage();
+        g.drawImage(image, 16*BLOC_SIZE, 22*BLOC_SIZE, 2*BLOC_SIZE1,  2*BLOC_SIZE1, null);
+        
+        icon = new ImageIcon("Resources/canapee.jpeg");
+        image = icon.getImage();
+        g.drawImage(image, 17*BLOC_SIZE, 4*BLOC_SIZE, 5*BLOC_SIZE1,  4*BLOC_SIZE1, null);
+        
+        icon = new ImageIcon("Resources/round table.jpeg");
+        image = icon.getImage();
+        g.drawImage(image, 20*BLOC_SIZE, 2*BLOC_SIZE, 2*BLOC_SIZE1,  2*BLOC_SIZE1, null);
+        
+        
+        
+        
+        
+        
         	// Decouper en fontions
             if(object instanceof Directable) {
                 int direction = ((Directable) object).getDirection();
