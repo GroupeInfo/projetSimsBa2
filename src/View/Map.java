@@ -124,6 +124,13 @@ public class Map extends JPanel {
         	}
         }
         
+        
+        icon = new ImageIcon("Resources/SimsPerson.jpg");
+    	image = icon.getImage();
+    	g.drawImage(image, 20*BLOC_SIZE, 3*BLOC_SIZE, BLOC_SIZE1, BLOC_SIZE1, null);
+    	
+    	
+    	
         if (object instanceof BlockUnbreakable) {
         	  icon = new ImageIcon("Resources/Brick_Block.png");
               image = icon.getImage();
