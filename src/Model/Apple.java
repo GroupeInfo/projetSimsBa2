@@ -2,18 +2,19 @@ package Model;
 
 import java.util.ArrayList;
 
-public class Apple extends GameObject implements Attachable, Deletable, Activable{
+public class Apple extends GameObject implements Attachable, Activable, Deletable{
 	private ArrayList<DeletableObserver> observers = new ArrayList<DeletableObserver>();
-	private int AppleSatisfaction = 10;
 	private int AppleEnergy = 10;
+	private int AppleSatisfaction = 10;
 	private Player p;
-	public Apple(int X, int Y, Player p) {
-		super(X,Y,6,0,0);
+	public Apple(int X, int Y, Player player) {
+		super(X,Y,6,1,1);
+		this.p = player;
+		
 	}
-	
-	public void activate() {
-		 addEnergyToPlayer();
-		 addSatisfactionToPlayer();
+	 public void activate() {
+		 p.addEnergy(this.AppleEnergy);
+		 p.addSatisfaction(this.AppleSatisfaction);
 	 }
 	 public boolean isObstacle(){
 		 return(true);
@@ -21,19 +22,6 @@ public class Apple extends GameObject implements Attachable, Deletable, Activabl
 	 
 	 public int getExtraEnergy() {
 		 return(AppleEnergy);
-	 }
-	 
-	 public int getExtraSatisfaction() {
-		 return(AppleSatisfaction);
-	 }
-	 
-	 
-	 public void addEnergyToPlayer() {
-		p.addEnergy(this.AppleEnergy);
-	 }
-	 
-	 public void addSatisfactionToPlayer() {
-		 p.addSatisfaction(this.AppleSatisfaction);
 	 }
 	 
 	 public void notifyDeletableObserver() {
@@ -49,5 +37,6 @@ public class Apple extends GameObject implements Attachable, Deletable, Activabl
 		 
 	 }
 }
+
 
 

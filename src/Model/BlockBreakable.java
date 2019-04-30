@@ -1,4 +1,4 @@
-package Model;
+/*package Model;
 import java.util.ArrayList;
 
 public class BlockBreakable extends Block implements Deletable, Activable {
@@ -45,4 +45,4 @@ public class BlockBreakable extends Block implements Deletable, Activable {
         return true;
     }
 
-}
+}*/

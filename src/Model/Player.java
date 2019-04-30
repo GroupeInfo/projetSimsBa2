@@ -1,14 +1,27 @@
 package Model;
-public class Player extends GameObject implements Directable {
+public class Player implements Directable {
 
     int energy = 100;
     int Satisfaction = 100;
     int FamilyMoney = 250;
-    int direction = EAST;  
+    int direction = EAST;
+    int posX;
+    int posY;
+    int lifes = 100;
+    boolean dead = false;
     private boolean SleepingState;
+    private boolean isInFarm;
+    protected AttackWeapon currentWeapon = null;
+    protected AttackWeapon sword = null;
     
     public Player(int x, int y, int maxBomb) {
-        super(x, y, 2,0,0);
+        this.posX = x;
+        this.posY = y;
+        
+        AttackWeapon sword = new AttackWeapon(25, 1);
+        this.sword = sword;
+        
+        currentWeapon = this.sword;
     }
 
     public void move(int X, int Y) {
@@ -26,16 +39,49 @@ public class Player extends GameObject implements Directable {
         else if(x == -1 && y == 0)
             direction = WEST;
     }
+    
+    public void removeLifePoints(int lifePointsLess) {
+    	lifes = lifes - lifePointsLess;
+    	if (lifes <= 0) {
+    		lifes = 0;
+    		//EndGame();
+    	}
+    }
+    
+    public void addLifePoints(int lifePointsMore) {
+    	lifes = lifes + lifePointsMore;
+    	if(lifes >= 100) {
+    		lifes = 100;
+    	}
+    }
+    
 
    ////////////////////////////////////////////////////////////////////////////////////////
 
-
-    @Override
-    public boolean isObstacle() {
-        return false;
+    public boolean isAtPosition(int x, int y) {
+        return this.posX == x && this.posY == y;
     }
     
-    @Override
+    public boolean isObstacle() {
+        return true;
+    }
+    
+    public int getPosX() {
+        return this.posX;
+    }
+    
+    public void setPosX(int X) {
+    	this.posX = X;
+    }
+    
+    public int getPosY() {
+        return this.posY;
+    }
+    
+    public void setPosY(int Y) {
+    	this.posY = Y;
+    }
+    
     public int getDirection() {
     return direction;
     }
@@ -48,11 +94,7 @@ public class Player extends GameObject implements Directable {
         }
         return this.posX + delta; //retourne la valeur en X de l'obstacle qu'il touche lorsqu'il bouge ouest ou est...
         						//pas besoin de retourne en Y car on l'a connait... c'est la meme que celle du player.......
-        						//fait un schéma dans ta tete .
-        						//rotate et direction et tout ce bazzare nous permet de connaitre les valeurs des objets qui entour le player
-        						//rien de plus... on est en 2D rotate ne veut rien dire comme tourner le player car le tourner ne changera rien
-        						//car move va le déplacer qu'il regarde a gauche droite en haut en bas le move() le prends et lui pose ou il veut
-        						//en  effet, il fallait qu'il nomme cette fonction autrement(la fonction rotate())...
+        						
     }
 
     public int getFrontY() {
@@ -92,8 +134,9 @@ public class Player extends GameObject implements Directable {
 	}
 	
 	public void addEnergy(int extraEnergy){
+		System.out.println("dededede");
 		int sum = this.energy + extraEnergy;
-		if((sum) <100) {
+		if((sum) <=100) {
 			energy += extraEnergy;
 		}
 		else {
@@ -101,6 +144,27 @@ public class Player extends GameObject implements Directable {
 		}
 	}
 	
+	 public String getCurrentWeapon() {
+	    	if (currentWeapon == sword) {
+	    		return "sword";
+	    	}
+	    	else {
+	    		return "gun";
+	    	}
+	    }
+	 
+	 
+	public int getPlayersWeaponForce() {
+    	return currentWeapon.getAttackForce();
+    }
+    
+    public int getPlayersWeaponRange() {
+    	return currentWeapon.getAttackRange();
+    }
+    
+    public int getLifePoints() {
+    	return(lifes);
+    }
 	public void setSleepingState() {
 		SleepingState = true;
 	}
@@ -113,9 +177,24 @@ public class Player extends GameObject implements Directable {
 		return SleepingState;
 	}
 	
+	public boolean isDead(){
+		return dead;
+	}
+	
 	public void addSatisfaction(int ExtraSatisfaction) {
 		this.Satisfaction = this.Satisfaction + ExtraSatisfaction;
 	}
 
+	public void setIsInFarm() {
+		isInFarm = true;	
+	}
+	
+	public void setIsNotInFarm(){
+		isInFarm = false;
+	}
+
+	public boolean isInFarmState() {
+		return isInFarm;
+	}
 	
 }

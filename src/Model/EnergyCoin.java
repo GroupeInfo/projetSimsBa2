@@ -7,12 +7,12 @@ public class EnergyCoin extends GameObject implements Attachable, Activable, Del
 	private int energy = 20;
 	private Player p;
 	public EnergyCoin(int X, int Y, Player player) {
-		super(X,Y,6,0,0);
+		super(X,Y,6,1,1);
 		this.p = player;
 		
 	}
 	 public void activate() {
-		 
+		 p.addEnergy(this.energy);
 	 }
 	 public boolean isObstacle(){
 		 return(true);
@@ -22,9 +22,6 @@ public class EnergyCoin extends GameObject implements Attachable, Activable, Del
 		 return(energy);
 	 }
 	 
-	 public void addEnergyToPlayer() {
-		p.addEnergy(this.energy);
-	 }
 	 
 	 public void notifyDeletableObserver() {
 	        int i = 0;

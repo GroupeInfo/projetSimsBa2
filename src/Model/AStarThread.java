@@ -6,7 +6,7 @@ public class AStarThread implements Runnable{
 	private int y;
 
 	public AStarThread(Game g, Player p, int x, int y) {
-		this.g= g;
+		this.g = g;
 		this.p = p;
 		this.x = x;
 		this.y = y;

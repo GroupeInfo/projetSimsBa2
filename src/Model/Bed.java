@@ -25,7 +25,7 @@ public class Bed extends GameObject implements Attachable, Activable{
 				if(count1 >= 1) {
 				timer.cancel();
 				StartAndEnd();}
-				g.removePlayerFromObjects(p);
+				g.removePlayerFromPlayers(p);
 				g.addPlayerToSleepingObjects(p);
 				p.setSleepingState();
 				count1++;
@@ -49,8 +49,10 @@ public class Bed extends GameObject implements Attachable, Activable{
 				 if(count >=5) {
 					 p.setAwakeState();
 					 p.addEnergy(getBedEnergy());
+					 
 					 g.removePlayerFromSleepingObjects(p);
-					 g.addPlayerToObjects(p);
+					 g.addPlayerToPlayers(p);
+					 
 					 destimer.cancel();
 					 count = 0;
 				 }

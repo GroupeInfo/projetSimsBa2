@@ -1,10 +1,9 @@
 package View;
 
-
+import Model.FarmGameObjects;
 import Model.Attachable;
 import Model.GameObject;
 import Model.Player;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.KeyListener;
@@ -19,10 +18,12 @@ public class Window extends JFrame {
 	private JPanel groupPanel = new JPanel(new BorderLayout());
     private Map map = new Map();
     private GUI GUI = new GUI();
+    private boolean Farm = false;
  
 
     public Window(){
-    	super("this isnt a funny game");
+    	super("CHICKEN SIMS");
+    	if(Farm == false) {
         // JFrame window = new JFrame("Game");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setBounds(0, 0, 2000, 2000);
@@ -31,11 +32,27 @@ public class Window extends JFrame {
         groupPanel.add(GUI, BorderLayout.LINE_END);
         this.getContentPane().add(this.groupPanel);
         this.setVisible(true);
+    	}
+
     }
 
+    public void removeGameWindow() {
+    	this.setVisible(false);
+    }
+    
     public void setGameObjects(ArrayList<GameObject> objects) {
         this.map.setObjects(objects);
         this.map.redraw();
+    }
+    
+    public void setFarmGameObjects(ArrayList<FarmGameObjects> farmObjects) {
+    	this.map.setFarmObjects(farmObjects);
+    	this.map.redraw();
+    
+    }
+    public void setPlayers(ArrayList<Player> Players) {
+    	this.map.setPlayers(Players);
+    	this.map.redraw();
     }
 
     public void update() {
@@ -62,8 +79,9 @@ public class Window extends JFrame {
 	public int getOutsideSizeY() {
 		return map.OUTSIDE_SIZEY;
 	}
-	public void setGuiAttributes(ArrayList<GameObject> objects, ArrayList<Attachable> inventory) {
-		GUI.setGUIAttributes(objects, inventory);
+	
+	public void setGuiAttributes(ArrayList<GameObject> objects, ArrayList<Attachable> inventory, ArrayList<Player> players) {
+		GUI.setGUIAttributes(objects, inventory,  players);
 	}
 	
 	public void setPlayer(Player p) {

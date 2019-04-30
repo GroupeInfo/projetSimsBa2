@@ -1,7 +1,7 @@
 package Model;
 
 public class Door extends GameObject implements Activable {
-	private boolean opened;
+	private boolean opened = false;
 	private Player p;
 	
 	public Door(int X, int Y, int color) {
@@ -11,12 +11,13 @@ public class Door extends GameObject implements Activable {
 
 	@Override
 	public void activate() {
-		if(this.opened  = false) {
-			opened = true;
+		if(this.opened  == false) {
+			System.out.println("jokkk");
+			this.opened = true;
 		}
 		
 		else {
-			opened = false;
+			this.opened = false;
 		}
 		
 	}
@@ -27,6 +28,7 @@ public class Door extends GameObject implements Activable {
 		// TODO Auto-generated method stub
 		if(this.opened == true) {
 			z = false;
+			System.out.println("okk");
 		}
 		else {
 			z = true;

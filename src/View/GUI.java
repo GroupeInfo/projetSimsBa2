@@ -17,7 +17,7 @@ import Model.Apple;
 import Model.Attachable;
 import Model.EnergyCoin;
 import Model.Game;
-
+import Model.Player;
 public class GUI extends JPanel {
 	private Player p;
 	private int BAR_LENGTH = 120;
@@ -25,6 +25,9 @@ public class GUI extends JPanel {
 	private int AVATAR_SIZE = 100;
 	private ArrayList<GameObject> objects = new ArrayList<GameObject>();
 	private ArrayList<Attachable> inventory = new ArrayList<Attachable>();
+	private ArrayList<Player> players = new ArrayList<Player>();
+
+	private boolean playerDead = false;
 
     public GUI() {
         this.setPreferredSize(new Dimension(450, 600));
@@ -32,9 +35,11 @@ public class GUI extends JPanel {
         this.setOpaque(true);
     }
     
-    public void setGUIAttributes(ArrayList<GameObject> objects, ArrayList<Attachable> inventory) {
+    public void setGUIAttributes(ArrayList<GameObject> objects, ArrayList<Attachable> inventory, ArrayList<Player> players) {
     	this.objects = objects;
     	this.inventory = inventory;
+    	this.players = players;
+    	
     } 
     
 	public void paint(Graphics g) {
@@ -67,7 +72,41 @@ public class GUI extends JPanel {
         g.fillRect(60, 210, length_ok, BAR_WIDTH);
         g.fillRect(60, 320, length1_ok, BAR_WIDTH);
         
-            //ENERGYCOIN
+        
+        
+        //DrawingPLayer
+        
+        for(Player player: players) {
+			if (player.isDead() == false) {
+				
+				int playerLife = player.getLifePoints();
+				
+				g.setColor(Color.black);
+				g.drawString("Player's life:", 20, 650);
+				
+				g.setColor(Color.blue);
+				g.drawString(String.valueOf(playerLife) + "%", 170, 650);
+				
+				g.setColor(Color.white);
+				g.fillRect(20, 665, 200, 30);
+				
+				g.setColor(Color.red);
+				g.fillRect(20, 665, 2*playerLife, 30);
+				
+				String currentWeapon = player.getCurrentWeapon();
+				if (currentWeapon == "sword") {
+					g.fillOval(14, 320, 8, 8);
+				}
+				else {
+					g.fillOval(14, 405, 8, 8);
+				}
+				break;
+			}
+			
+		}
+        
+        
+        //ENERGYCOIN
         
         ImageIcon icon2 = null;
 	    Image image2 = null;

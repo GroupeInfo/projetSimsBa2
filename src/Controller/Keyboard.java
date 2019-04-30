@@ -1,9 +1,11 @@
 package Controller;
 
 import java.awt.event.KeyEvent;
+
 import java.awt.event.KeyListener;
 
 import Model.Game;
+
 
 public class Keyboard implements KeyListener {
     private Game game;
@@ -14,7 +16,6 @@ public class Keyboard implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent event) {
-    	System.out.println(game.SleepingStateOfPlayer());
     	if(game.SleepingStateOfPlayer() == false) {
     		
     	
