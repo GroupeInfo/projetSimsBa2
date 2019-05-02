@@ -12,6 +12,7 @@ import Model.Door;
 import Model.GameObject;
 import Model.Player;
 import Model.Chicken;
+import Model.Computer;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -32,9 +33,8 @@ public class Map extends JPanel {
     private ArrayList<FarmGameObjects> farmObjects = null;
     private ArrayList<Player> players = null;
     public final int HOUSE_SIZE = 25;
-    public final int OUTSIDE_SIZEX = 13;
-    public final int OUTSIDE_SIZEY = 25;//final permet de fixer la map_size a 25 on peut plus jamais changer...essayez d'erire Map_size = 2 par exemple
-    								//ca ne marchera pas...
+    public final int OUTSIDE_SIZEX = 7;
+    public final int OUTSIDE_SIZEY = 25;
     public static int BLOC_SIZE = 40;
     public static int BLOC_SIZE1 = BLOC_SIZE -2;
     private Mouse mouseController = null;
@@ -43,7 +43,7 @@ public class Map extends JPanel {
     public Map() {
     	this.setFocusable(true);
         this.requestFocusInWindow();
-        this.setPreferredSize(new Dimension(HOUSE_SIZE*BLOC_SIZE, HOUSE_SIZE*BLOC_SIZE));
+        this.setPreferredSize(new Dimension((HOUSE_SIZE+ OUTSIDE_SIZEX) *BLOC_SIZE , HOUSE_SIZE*BLOC_SIZE));
     
     }
 
@@ -56,17 +56,24 @@ public class Map extends JPanel {
         if(Game.mapChanger == false) {
         
         
-    	for (int i = 0; i < Game.houseSize; i++) { 
-            for (int j = 0; j < Game.houseSize; j++) {
+    	for (int i = 0; i < HOUSE_SIZE; i++) { 
+            for (int j = 0; j < HOUSE_SIZE; j++) {
                 int x = i;
                 int y = j;
-                iconFirst = new ImageIcon("Resources/Floor.jpg");
+                iconFirst = new ImageIcon("Resources/floor1.jpeg");
             	imageFirst = iconFirst.getImage();
             	g.drawImage(imageFirst, x*BLOC_SIZE, y*BLOC_SIZE, BLOC_SIZE, BLOC_SIZE, null);
             }
         }
-
-    	    
+    	for (int i = 25; i < 25 + OUTSIDE_SIZEX; i++) { 
+            for (int j = 0; j < HOUSE_SIZE; j++) {
+                int x = i;
+                int y = j;
+                iconFirst = new ImageIcon("Resources/Green.jpg");
+            	imageFirst = iconFirst.getImage();
+            	g.drawImage(imageFirst, x*BLOC_SIZE, y*BLOC_SIZE, BLOC_SIZE, BLOC_SIZE, null);
+            }
+        }    
 
         for (GameObject object : this.objects) {
         	 int x = object.getPosX();
@@ -103,43 +110,59 @@ public class Map extends JPanel {
         Image image = null;
         
         if (object instanceof Apple) {
-        	icon = new ImageIcon("Resources/pommes.jpeg");
+        	icon = new ImageIcon("Resources/pomme.jpeg");
         	image = icon.getImage();
         	g.drawImage(image, x*BLOC_SIZE, y*BLOC_SIZE, w*BLOC_SIZE1, h*BLOC_SIZE1, null);
         }
         
         
         if (object instanceof EnergyCoin) {
-        	icon = new ImageIcon("Resources/EnergyCoin.jpg");
+        	icon = new ImageIcon("Resources/energycoin1.jpeg");
         	image = icon.getImage();
         	g.drawImage(image, x*BLOC_SIZE, y*BLOC_SIZE, BLOC_SIZE1, BLOC_SIZE1, null);
         }
-        
-       
+
         
         if (object instanceof BlockUnbreakable) {
         	  icon = new ImageIcon("Resources/Brick_Block.png");
               image = icon.getImage();
-              g.drawImage(image, x*BLOC_SIZE, y*BLOC_SIZE, BLOC_SIZE1,  BLOC_SIZE1, null);
+              g.drawImage(image, x*BLOC_SIZE, y*BLOC_SIZE, w*BLOC_SIZE1,  h*BLOC_SIZE1, null);
+        }
+        
+        if (object instanceof Computer) {
+      	  	icon = new ImageIcon("Resources/Ordinateur.jpg");
+            image = icon.getImage();
+            g.drawImage(image, x*BLOC_SIZE, y*BLOC_SIZE, w*BLOC_SIZE1,  h*BLOC_SIZE , null);
         }
         
         if (object instanceof Bed) {
-      	  icon = new ImageIcon("Resources/Bed.jpg");
+      	  icon = new ImageIcon("Resources/bed1.jpeg");
             image = icon.getImage();
             g.drawImage(image, x*BLOC_SIZE, y*BLOC_SIZE, w*BLOC_SIZE1,  h*BLOC_SIZE , null);
         }
         
         if(object instanceof Door) {
-        	icon = new ImageIcon("Resources/Door.png");
+        	if(((Door) object).isOpened()) {
+        	icon = new ImageIcon("Resources/door1.jpeg");
         	image = icon.getImage();
-        	 g.drawImage(image, x*BLOC_SIZE, y*BLOC_SIZE, BLOC_SIZE1/4,  BLOC_SIZE1 , null);
+        	g.drawImage(image, x*BLOC_SIZE, y*BLOC_SIZE, BLOC_SIZE1,  BLOC_SIZE1 , null);
+        	}
+        	
+        	else {
+        		icon = new ImageIcon("Resources/door2.jpeg");
+            	image = icon.getImage();
+            	g.drawImage(image, x*BLOC_SIZE, y*BLOC_SIZE, BLOC_SIZE1,  BLOC_SIZE1 , null);
+            	
+        	}
         }
             
-        icon = new ImageIcon("Resources/pomme.jpeg");
-        image = icon.getImage();
-        g.drawImage(image, 20*BLOC_SIZE, 3*BLOC_SIZE, BLOC_SIZE1,  BLOC_SIZE1, null);
+             	// Decouper en fontions
+            
+        }
+        ImageIcon icon = null;
+        Image image = null;
         
-        icon = new ImageIcon("Resources/tv12.png");
+        icon = new ImageIcon("Resources/tv12.jpeg");
         image = icon.getImage();
         g.drawImage(image, 19*BLOC_SIZE, 1*BLOC_SIZE, 3*BLOC_SIZE1,  2*BLOC_SIZE1, null);
         
@@ -154,7 +177,7 @@ public class Map extends JPanel {
        
         icon = new ImageIcon("Resources/gas2.jpeg");
         image = icon.getImage();
-        g.drawImage(image, 21*BLOC_SIZE, 21*BLOC_SIZE, 3*BLOC_SIZE1,  3*BLOC_SIZE1, null);
+        g.drawImage(image, 19*BLOC_SIZE, 21*BLOC_SIZE, 3*BLOC_SIZE1,  3*BLOC_SIZE1, null);
         
         icon = new ImageIcon("Resources/sofa11.jpeg");
         image = icon.getImage();
@@ -164,11 +187,12 @@ public class Map extends JPanel {
         image = icon.getImage();
         g.drawImage(image, 7*BLOC_SIZE, 18*BLOC_SIZE, 2*BLOC_SIZE1,  2*BLOC_SIZE1, null);
         
-        icon = new ImageIcon("Resources/single table.jpeg");
-        image = icon.getImage();
-        g.drawImage(image, 10*BLOC_SIZE, 1*BLOC_SIZE, 3*BLOC_SIZE1,  4*BLOC_SIZE1, null);
         
-        icon = new ImageIcon("Resources/single table.jpeg");
+        icon = new ImageIcon("Resources/single bed.jpeg");
+        image = icon.getImage();
+        g.drawImage(image, 9*BLOC_SIZE, 1*BLOC_SIZE, 3*BLOC_SIZE1,  4*BLOC_SIZE1, null);
+        
+        icon = new ImageIcon("Resources/single bed.jpeg");
         image = icon.getImage();
         g.drawImage(image, 13*BLOC_SIZE, 1*BLOC_SIZE, 3*BLOC_SIZE1,  4*BLOC_SIZE1, null);
         
@@ -176,11 +200,6 @@ public class Map extends JPanel {
         icon = new ImageIcon("Resources/table1.jpeg");
         image = icon.getImage();
         g.drawImage(image, 10*BLOC_SIZE, 16*BLOC_SIZE, 5*BLOC_SIZE1,  6*BLOC_SIZE1, null);
-        
-        
-        	// Decouper en fontions
-            
-        }
 
 }
 
@@ -194,10 +213,9 @@ public class Map extends JPanel {
             for (int j = 0; j < HOUSE_SIZE; j++) {
                 int x = i;
                 int y = j;
-                g.setColor(Color.GREEN);
-                g.fillRect(x * BLOC_SIZE, y * BLOC_SIZE, BLOC_SIZE1, BLOC_SIZE1);
-                g.setColor(Color.BLACK);
-                g.drawRect(x * BLOC_SIZE, y * BLOC_SIZE, BLOC_SIZE1, BLOC_SIZE1);
+                iconFirst = new ImageIcon("Resources/Green.jpg");
+            	imageFirst = iconFirst.getImage();
+            	g.drawImage(imageFirst, x*BLOC_SIZE, y*BLOC_SIZE, BLOC_SIZE, BLOC_SIZE, null);
             }
         }
 
@@ -267,7 +285,8 @@ public class Map extends JPanel {
         
         for (Player player : this.players) {     
 	        boolean z = player.getSleepingState();
-	        if(z != true) {
+	        boolean z1 = player.isDead();
+	        if(!z && !z1) {
 	        iconFirst2 = new ImageIcon("Resources/SimsPerson.jpg");
 	        imageFirst2 = iconFirst2.getImage();
 	        int x = player.getPosX();

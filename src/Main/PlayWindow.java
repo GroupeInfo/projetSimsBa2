@@ -15,6 +15,7 @@ public class PlayWindow extends JFrame{
 	public static JTextField MapSize = null;
 	public static JTextField BreakableBlocks = null;
 	public static JTextField PixelNumber = null;
+	public static JTextField Difficulity = null;
     static JFrame frame;
 
 	public PlayWindow() {
@@ -33,20 +34,10 @@ public class PlayWindow extends JFrame{
 		label1.setBounds(50, 100, 100, 20);
 		panel.add(label1);
 		
-		JTextField mapSize = new JTextField("20");
+		JTextField mapSize = new JTextField("25");
 		mapSize.setBounds(150, 100, 50, 20);
 		panel.add(mapSize);
 		MapSize = mapSize;
-		
-		///////////////////////////////////////////////////
-		JLabel pixel = new JLabel("Pixels:");
-		pixel.setBounds(245, 100, 100, 20);
-		panel.add(pixel);
-		
-		JTextField pixelNumber = new JTextField("40");
-		pixelNumber.setBounds(300, 100, 50, 20);
-		panel.add(pixelNumber);
-		PixelNumber = pixelNumber;
 		
 		////////////////////////////////////////////////
 		JLabel label2 = new JLabel("Set number of breakble blocks:");
@@ -57,6 +48,17 @@ public class PlayWindow extends JFrame{
 		breakableBlocks.setBounds(250, 140, 50, 20);
 		panel.add(breakableBlocks);
 		BreakableBlocks = breakableBlocks;
+		
+		//////////////////////////////////////////////////////////
+		JLabel label3 = new JLabel("Set difficulity:");
+		label3.setBounds(50, 170, 100, 20);
+		panel.add(label3);
+		
+		JTextField difficulity = new JTextField("15");
+		difficulity.setBounds(150, 170, 50, 20);
+		panel.add(difficulity);
+		Difficulity = difficulity;
+		
 		
 		//////////////////////////////////////////////////////////
 		JLabel up = new JLabel("UP arrow : move up");
@@ -76,12 +78,20 @@ public class PlayWindow extends JFrame{
 		panel.add(right);
 		
 		///////////////////////////////////////////////////////
-		JLabel space = new JLabel("SPACE : attack");
-		space.setBounds(145, 330, 100, 20);
+		JLabel space = new JLabel("SPACE : Activate things or Attack an animal");
+		space.setBounds(50, 320, 400, 20);
 		panel.add(space);
+		/////////////////////////////////////////////////////////////////////////
+		JLabel A = new JLabel("A : Hold things");
+		A.setBounds(50, 350, 200, 20);
+		panel.add(A);
+		/////////////////////////////////////////////////////////////////////////
+		JLabel Q = new JLabel("Q : Quit Game");
+		Q.setBounds(150, 400, 300, 20);
+		panel.add(Q);
 		
 		
-		/////////////////////////////////////////////////////////////////////////		
+		
 		frame.add(panel);
 		frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		frame.setBounds(100, 100, 430, 600);

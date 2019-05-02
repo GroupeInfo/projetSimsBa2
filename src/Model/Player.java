@@ -3,7 +3,6 @@ public class Player implements Directable {
 
     int energy = 100;
     int Satisfaction = 100;
-    int FamilyMoney = 250;
     int direction = EAST;
     int posX;
     int posY;
@@ -11,12 +10,15 @@ public class Player implements Directable {
     boolean dead = false;
     private boolean SleepingState;
     private boolean isInFarm;
+    private Game g;
     protected AttackWeapon currentWeapon = null;
     protected AttackWeapon sword = null;
+    private static int FamilyMoney = 250;
     
-    public Player(int x, int y, int maxBomb) {
+    public Player(int x, int y, Game g) {
         this.posX = x;
         this.posY = y;
+        this.g = g;
         
         AttackWeapon sword = new AttackWeapon(25, 1);
         this.sword = sword;
@@ -44,7 +46,7 @@ public class Player implements Directable {
     	lifes = lifes - lifePointsLess;
     	if (lifes <= 0) {
     		lifes = 0;
-    		//EndGame();
+    		dead = true;
     	}
     }
     
@@ -109,8 +111,8 @@ public class Player implements Directable {
     	return energy/100.0; //idem read next comment. (si retourne 1 donc on a BAR_Length * 1 = ans donc rectangle complet)
     }
     
-    public double getMoney() {
-    	return FamilyMoney/100.0;
+    public double getFamilyMoney() {
+    	return FamilyMoney;
     }
     
     public double getSatisfaction() {
@@ -134,7 +136,6 @@ public class Player implements Directable {
 	}
 	
 	public void addEnergy(int extraEnergy){
-		System.out.println("dededede");
 		int sum = this.energy + extraEnergy;
 		if((sum) <=100) {
 			energy += extraEnergy;
@@ -175,6 +176,10 @@ public class Player implements Directable {
 	
 	public boolean getSleepingState() {
 		return SleepingState;
+	}
+	
+	public void setDeath() {
+		dead = true;
 	}
 	
 	public boolean isDead(){

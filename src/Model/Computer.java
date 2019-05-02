@@ -1,16 +1,16 @@
 package Model;
 
-import java.util.ArrayList;
-import View.Map;
 import java.util.Timer;
 import java.util.TimerTask;
-public class Bed extends GameObject implements Activable, OversizedObject{
-	private int energy = 40;
+
+public class Computer extends GameObject implements Activable, OversizedObject {
+	private int money = 40;
 	private Player p;
 	private Game g;
 	private static int count = 0;
 	private static int count1 = 0;
-	public Bed(int X, int Y, Player player, int widthIntRatio, int heightIntRatio, Game g) {
+	private static int waitCount = 0;
+	public Computer(int X, int Y, Player player, int widthIntRatio, int heightIntRatio, Game g) {
 		super(X,Y,6, widthIntRatio, heightIntRatio);
 		this.p = player;
 		this.g  = g;
@@ -18,7 +18,7 @@ public class Bed extends GameObject implements Activable, OversizedObject{
 	}
 	
 	 public void activate() {
-		 
+		 if(waitCount ==0) {
 		 Timer timer = new Timer();
 		 TimerTask task = new TimerTask() {
 				public void run() {
@@ -31,14 +31,15 @@ public class Bed extends GameObject implements Activable, OversizedObject{
 				count1++;
 				
 			}
-				
+		 
 			      };
 			timer.schedule(task,0,1000);  
+		 }
 			
 		}
 	 
-	 public int getBedEnergy() {
-		 return(this.energy);
+	 public int getComputerMoney() {
+		 return(money);
 	 }
 	 
 	 public void StartAndEnd() {
@@ -46,14 +47,15 @@ public class Bed extends GameObject implements Activable, OversizedObject{
 		 TimerTask desTask = new TimerTask() {
 			 
 			 public void run() {
-				 if(count >=5) {
+				 if(count == 7) {
 					 p.setAwakeState();
-					 p.addEnergy(getBedEnergy());
+					 p.addMoney(getComputerMoney());
 					 
 					 g.removePlayerFromSleepingObjects(p);
 					 g.addPlayerToPlayers(p);
 					 
 					 destimer.cancel();
+					 initializingWaitTime();
 					 count = 0;
 				 }
 				 else {
@@ -64,17 +66,34 @@ public class Bed extends GameObject implements Activable, OversizedObject{
 		 destimer.schedule(desTask,0,1000);
 	 }
 	 
-
+	 public void initializingWaitTime() {
+		 Timer waitTimer = new Timer();
+		 TimerTask waitTimerTask = new TimerTask() {
+			 
+			 public void run() {
+				 if(waitCount == 180) {
+					 waitTimer.cancel();
+					 waitCount = 0;
+				 }
+				 else {
+					 waitCount ++;	 
+				 }
+			 }
+		 };
+		 waitTimer.schedule(waitTimerTask,0,1000);
+	 }
+	 
+	 
 	 public boolean isObstacle(){
 		 return(true);
 	 }
 	 
-	 public int getExtraEnergy() {
-		 return(energy);
+	 public int getExtraMoney() {
+		 return(money);
 	 }
 	 
 	 public void addEnergyToPlayer() {
-		p.addEnergy(this.energy);
+		p.addMoney(money);
 	 }
 	 
 	 public boolean isInObjectSpace(int x, int y) {
@@ -92,7 +111,7 @@ public class Bed extends GameObject implements Activable, OversizedObject{
 				}
 			}
 		}	
-	    	
 	    	return z;
 	  }
 }
+

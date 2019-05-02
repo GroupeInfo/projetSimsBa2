@@ -23,7 +23,8 @@ public class Chicken extends FarmGameObjects implements Directable, Activable, D
 	private int direction = EAST;
 	private Game game = null;
 	private AttackWeapon weapon = null;
-	private int damage = 10;
+	private static int damage = 10;
+	private boolean Alive = true;
 	//private Player player;
 	public Chicken(int x, int y, Game game, ArrayList<Player> chickenPlayers) {
 		super(x, y, 6, 1, 1);
@@ -36,7 +37,6 @@ public class Chicken extends FarmGameObjects implements Directable, Activable, D
 		//Initializing thread
 		t = new Thread(this);
 		t.start();
-		
 		//Adding enemy to "objects"
 		this.game.farmObjects.add(this);
 		
@@ -51,24 +51,27 @@ public class Chicken extends FarmGameObjects implements Directable, Activable, D
 	
 	
 	public  void run() {
-		while (true) {
+		while (Alive) {
 			try {
 				if (game.getEndGame() == false) {
 					for(Player player : players) {
 						boolean PF = player.isInFarmState() ;
 						if(PF) {
-							this.active_player = player;	
+							this.active_player = player;
+						}
+						else {
+							this.active_player = null;
 						}
 						break;
 					}
 
-					
+					if(this.active_player != null) {
 					Thread.sleep(sleeptime);
 					enemyAttacksPlayer();
 					moveEnemyX();
-					
 					Thread.sleep(sleeptime);
 					moveEnemyY();
+					}
 				}
 				
 			} catch (InterruptedException e) {
@@ -104,24 +107,9 @@ public class Chicken extends FarmGameObjects implements Directable, Activable, D
     	//attackForce is negative
     	int attackForce = game.getPlayersWeaponForce();
     	if (lifes <= Math.abs(attackForce)) {
-    		System.out.println("OK on est dans le if");
     		crush();
-    		//Checks if there are enemies remaining after this one is being destroyed
-    		//If no enemy remaining: ends the game
-    		boolean stillEnemies = false;
-    		for (FarmGameObjects object: game.farmObjects) {
-    			if (object instanceof Chicken) {
-    				stillEnemies = true;
-    				break;
-    			}
-    		}
-    		
-    		if (stillEnemies == false) {
-    			game.setEndGame();
-    		}
-    		
-    		
-    	}
+    		Alive = false;
+    		}    			
     	else {
     		lifes = lifes + attackForce;
     	}
@@ -272,6 +260,7 @@ public class Chicken extends FarmGameObjects implements Directable, Activable, D
     
     
 	public void crush() {
+		
 		notifyDeletableObserver();
 	}
 
@@ -295,6 +284,10 @@ public class Chicken extends FarmGameObjects implements Directable, Activable, D
 	
 	public int getLifePoints() {
 		return lifes;
+	}
+	
+	public static void setChickenDamage(int difficulity) {
+		damage = difficulity; 
 	}
 	
 }

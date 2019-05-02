@@ -12,7 +12,6 @@ public class Door extends GameObject implements Activable {
 	@Override
 	public void activate() {
 		if(this.opened  == false) {
-			System.out.println("jokkk");
 			this.opened = true;
 		}
 		
@@ -28,12 +27,15 @@ public class Door extends GameObject implements Activable {
 		// TODO Auto-generated method stub
 		if(this.opened == true) {
 			z = false;
-			System.out.println("okk");
 		}
 		else {
 			z = true;
 		}
 		return z;
+	}
+
+	public boolean isOpened() {
+		return opened;
 	}
 
 }

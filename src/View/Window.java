@@ -26,7 +26,7 @@ public class Window extends JFrame {
     	if(Farm == false) {
         // JFrame window = new JFrame("Game");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setBounds(0, 0, 2000, 2000);
+        this.setBounds(0, 0,2000, 2000);
         this.getContentPane().setBackground(Color.gray);   
         groupPanel.add(map, BorderLayout.LINE_START);
         groupPanel.add(GUI, BorderLayout.LINE_END);

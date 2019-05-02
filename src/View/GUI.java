@@ -44,22 +44,23 @@ public class GUI extends JPanel {
     
 	public void paint(Graphics g) {
 		super.paintComponent(g);
+		
 		//draw avatar
         ImageIcon icon = new ImageIcon("Resources/SimsPerson.jpg");
         Image image = icon.getImage();
         g.drawImage(image, 150, 50, 100, 100, null);
         
-        ImageIcon icon1 = new ImageIcon("Resources/Hunger.jpg");
+        ImageIcon icon1 = new ImageIcon("Resources/like.jpeg");
         Image image1 = icon1.getImage();
         g.drawImage(image1, 6, 310, 48, 52, null);
 
 		// bars 
         // Energy 
-        g.setColor(Color.YELLOW);
+        g.setColor(Color.black);
         g.drawString("ENERGY", 6, 190);//drawString(str, int x, int y)
         
-        g.setColor(Color.cyan);
-        g.drawString("HUNGER", 6, 300);
+        g.setColor(Color.black);
+        g.drawString("SATISFACTION", 6, 300);
         
         g.setColor(Color.RED);
         g.fillRect(60, 210, BAR_LENGTH, BAR_WIDTH);
@@ -88,7 +89,7 @@ public class GUI extends JPanel {
 				g.drawString(String.valueOf(playerLife) + "%", 170, 650);
 				
 				g.setColor(Color.white);
-				g.fillRect(20, 665, 200, 30);
+				g.fillRect(20, 665, 200, 30); //200 de longeur donc 2*player en bas obligatoire car sinon ca donne la moitié du rectangle (100 ---> 50 par exemple)
 				
 				g.setColor(Color.red);
 				g.fillRect(20, 665, 2*playerLife, 30);
@@ -105,6 +106,13 @@ public class GUI extends JPanel {
 			
 		}
         
+        //Money
+        
+        double FamilyMoney = players.get(0).getFamilyMoney();
+        
+        g.setColor(Color.black);
+        g.drawString("FamilyMoney : ", 20, 740);
+        g.drawString(String.valueOf(FamilyMoney), 100, 740);
         
         //ENERGYCOIN
         
@@ -113,12 +121,12 @@ public class GUI extends JPanel {
 	    for(GameObject object: objects) {
 			
 			if (object instanceof EnergyCoin) {
-				icon2 = new ImageIcon("Resources/Energy.png");
+				icon2 = new ImageIcon("Resources/Energybar.jpeg");
             	image2 = icon2.getImage();
             	g.drawImage(image2, 6, 200, 48, 52, null);
 			}
 			
-			//INVENTORY
+		//INVENTORY
 		g.setColor(Color.black);
 		g.drawString("INVENTORY:", 20, 500);
 			
@@ -133,13 +141,13 @@ public class GUI extends JPanel {
 			int position = inventory.indexOf(object);
 			
 			if (object instanceof Apple) {
-				icon = new ImageIcon("Resources/Apple.png");
+				icon = new ImageIcon("Resources/pomme2.png");
 	            image = icon.getImage();
 	            g.drawImage(image, 20 + position*50, 520, 48, 48, null);
 				}
 			
 			if(object instanceof EnergyCoin) {
-				icon = new ImageIcon("Resources/EnergyBulb.jpg");
+				icon = new ImageIcon("Resources/energycoin2.png");
 				image = icon.getImage();
 				g.drawImage(image, 20 + position *50, 520, 48, 48, null);
 				
