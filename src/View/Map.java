@@ -1,11 +1,15 @@
 package View;
 
 import Model.BlockUnbreakable;
+
+
+import Model.Changeable;
+import Model.Kitchen;
+import Model.Shop;
 import Model.EnergyCoin;
 import Model.FarmTeleportation;
 import Model.Apple;
 import Model.Bed;
-//import Model.BlockBreakable;
 import Model.Game;
 import Model.Directable;
 import Model.Door;
@@ -13,7 +17,7 @@ import Model.GameObject;
 import Model.Player;
 import Model.Chicken;
 import Model.Computer;
-
+import Model.Shower;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -24,31 +28,32 @@ import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
-
 import Controller.Mouse;
 import Model.FarmGameObjects;
-import Model.Game;
+
 public class Map extends JPanel {
     private ArrayList<GameObject> objects = null;
     private ArrayList<FarmGameObjects> farmObjects = null;
     private ArrayList<Player> players = null;
-    public final int HOUSE_SIZE = 25;
+    public  static int HOUSE_SIZE ;
     public final int OUTSIDE_SIZEX = 7;
-    public final int OUTSIDE_SIZEY = 25;
     public static int BLOC_SIZE = 40;
     public static int BLOC_SIZE1 = BLOC_SIZE -2;
-    private Mouse mouseController = null;
 
-    //private Player p;
     public Map() {
     	this.setFocusable(true);
         this.requestFocusInWindow();
         this.setPreferredSize(new Dimension((HOUSE_SIZE+ OUTSIDE_SIZEX) *BLOC_SIZE , HOUSE_SIZE*BLOC_SIZE));
     
     }
-
+    
+    public static void setMapSize(int house_size) {
+    	HOUSE_SIZE = house_size;
+    }
+    
     
     public void paint(Graphics g) {
+    	Graphics G = g;
     	
     	ImageIcon iconFirst = null;
         Image imageFirst = null;
@@ -65,7 +70,7 @@ public class Map extends JPanel {
             	g.drawImage(imageFirst, x*BLOC_SIZE, y*BLOC_SIZE, BLOC_SIZE, BLOC_SIZE, null);
             }
         }
-    	for (int i = 25; i < 25 + OUTSIDE_SIZEX; i++) { 
+    	for (int i  = HOUSE_SIZE; i < HOUSE_SIZE + OUTSIDE_SIZEX; i++) { 
             for (int j = 0; j < HOUSE_SIZE; j++) {
                 int x = i;
                 int y = j;
@@ -109,6 +114,8 @@ public class Map extends JPanel {
         ImageIcon icon = null;
         Image image = null;
         
+           
+        
         if (object instanceof Apple) {
         	icon = new ImageIcon("Resources/pomme.jpeg");
         	image = icon.getImage();
@@ -135,27 +142,60 @@ public class Map extends JPanel {
             g.drawImage(image, x*BLOC_SIZE, y*BLOC_SIZE, w*BLOC_SIZE1,  h*BLOC_SIZE , null);
         }
         
-        if (object instanceof Bed) {
-      	  icon = new ImageIcon("Resources/bed1.jpeg");
-            image = icon.getImage();
-            g.drawImage(image, x*BLOC_SIZE, y*BLOC_SIZE, w*BLOC_SIZE1,  h*BLOC_SIZE , null);
-        }
-        
-        if(object instanceof Door) {
-        	if(((Door) object).isOpened()) {
-        	icon = new ImageIcon("Resources/door1.jpeg");
-        	image = icon.getImage();
-        	g.drawImage(image, x*BLOC_SIZE, y*BLOC_SIZE, BLOC_SIZE1,  BLOC_SIZE1 , null);
+        if(object instanceof Changeable) {
+        	if(((Changeable) object).isUsed()){
+        		if(object instanceof Shower) {
+	        	icon = new ImageIcon("Resources/douche2.jpeg");
+	        	image = icon.getImage();
+	        	g.drawImage(image, x*BLOC_SIZE, y*BLOC_SIZE, w*BLOC_SIZE1, h*BLOC_SIZE, null);
+        		} 
+        		else if (object instanceof Bed) {
+        	      	  icon = new ImageIcon("Resources/bed2.jpeg");
+        	            image = icon.getImage();
+        	            g.drawImage(image, x*BLOC_SIZE, y*BLOC_SIZE, w*BLOC_SIZE1,  h*BLOC_SIZE , null);
+        	        }
+        	    else if(object instanceof Door) {
+        	        	icon = new ImageIcon("Resources/door1.jpeg");
+        	        	image = icon.getImage();
+        	        	g.drawImage(image, x*BLOC_SIZE, y*BLOC_SIZE, BLOC_SIZE1,  BLOC_SIZE1 , null);
+        	        	}
+        	    else if (object instanceof Kitchen) {
+        	    	icon = new ImageIcon("Resources/gas2.jpeg");
+                    image = icon.getImage();
+                    g.drawImage(image, x*BLOC_SIZE, y*BLOC_SIZE, w*BLOC_SIZE1,  h*BLOC_SIZE1, null);
+                  }
+        	   
+        		
         	}
-        	
         	else {
-        		icon = new ImageIcon("Resources/door2.jpeg");
-            	image = icon.getImage();
-            	g.drawImage(image, x*BLOC_SIZE, y*BLOC_SIZE, BLOC_SIZE1,  BLOC_SIZE1 , null);
-            	
+        		if (object instanceof Shop) {
+                	icon = new ImageIcon("Resources/Shop.jpg");
+                	image = icon.getImage();
+                	g.drawImage(image, x*BLOC_SIZE, y*BLOC_SIZE, w*BLOC_SIZE1, h*BLOC_SIZE1, null);
+                }  
+
+        		else if(object instanceof Shower) {
+        			icon = new ImageIcon("Resources/douche1.jpeg");
+                	image = icon.getImage();
+                	g.drawImage(image, x*BLOC_SIZE, y*BLOC_SIZE, w*BLOC_SIZE1, h*BLOC_SIZE, null);
+        		}
+        		else if (object instanceof Bed) {
+      	      	  icon = new ImageIcon("Resources/bed1.jpeg");
+      	            image = icon.getImage();
+      	            g.drawImage(image, x*BLOC_SIZE, y*BLOC_SIZE, w*BLOC_SIZE1,  h*BLOC_SIZE , null);
+      	        }
+        		else if(object instanceof Door) {
+      	        	icon = new ImageIcon("Resources/door2.jpeg");
+      	        	image = icon.getImage();
+      	        	g.drawImage(image, x*BLOC_SIZE, y*BLOC_SIZE, BLOC_SIZE1,  BLOC_SIZE1 , null);
+      	        	}
+        		else if (object instanceof Kitchen) {
+	        		icon = new ImageIcon("Resources/gas1.jpeg");
+	                image = icon.getImage();
+	                g.drawImage(image, x*BLOC_SIZE, y*BLOC_SIZE, w*BLOC_SIZE1,  h*BLOC_SIZE1, null);
+                }
         	}
         }
-            
              	// Decouper en fontions
             
         }
@@ -165,19 +205,12 @@ public class Map extends JPanel {
         icon = new ImageIcon("Resources/tv12.jpeg");
         image = icon.getImage();
         g.drawImage(image, 19*BLOC_SIZE, 1*BLOC_SIZE, 3*BLOC_SIZE1,  2*BLOC_SIZE1, null);
-        
-        
-        icon = new ImageIcon("Resources/douche2.jpeg");
-        image = icon.getImage();
-        g.drawImage(image, 4*BLOC_SIZE, 22*BLOC_SIZE, 5*BLOC_SIZE1,  2*BLOC_SIZE1, null);
+       
         
         icon = new ImageIcon("Resources/hanafie2.jpeg");
         image = icon.getImage();
         g.drawImage(image, 2*BLOC_SIZE, 16*BLOC_SIZE, 2*BLOC_SIZE1,  2*BLOC_SIZE1, null);
-       
-        icon = new ImageIcon("Resources/gas2.jpeg");
-        image = icon.getImage();
-        g.drawImage(image, 19*BLOC_SIZE, 21*BLOC_SIZE, 3*BLOC_SIZE1,  3*BLOC_SIZE1, null);
+      
         
         icon = new ImageIcon("Resources/sofa11.jpeg");
         image = icon.getImage();
@@ -205,6 +238,7 @@ public class Map extends JPanel {
 
     
     else {
+    	//TODO
 	
     	g.setColor(Color.lightGray);
 		g.fillRect(0, 0, 1300, 1020);    	
@@ -280,51 +314,133 @@ public class Map extends JPanel {
         imageFirst1 = iconFirst1.getImage();
         g.drawImage(imageFirst1, 23*BLOC_SIZE, 23*BLOC_SIZE , BLOC_SIZE1, BLOC_SIZE1 , null);
         
-        ImageIcon iconFirst2 = null;
-        Image imageFirst2 = null;
         
-        for (Player player : this.players) {     
-	        boolean z = player.getSleepingState();
-	        boolean z1 = player.isDead();
-	        if(!z && !z1) {
-	        iconFirst2 = new ImageIcon("Resources/SimsPerson.jpg");
-	        imageFirst2 = iconFirst2.getImage();
-	        int x = player.getPosX();
-	        int y = player.getPosY();
-	        g.drawImage(imageFirst2, x*BLOC_SIZE, y*BLOC_SIZE, BLOC_SIZE1, BLOC_SIZE1, null);
-	        	
-	        //
-	        
+        for (Player player : this.players) { 
+           String gender = player.getGender();
+           if(player.isInFarmState() == Game.mapChanger){
 	       int direction = player.getDirection();
-	       int deltaX = 0;
-	       int deltaY = 0;
-	            
-	       switch (direction) {
-	       case Directable.EAST:
-	    	   deltaX = +BLOC_SIZE1/2;
-	    	   break;
-	       case Directable.NORTH:
-	           deltaY = -BLOC_SIZE1/2;
-	           break;
-	       case Directable.WEST:
-	           deltaX = -BLOC_SIZE1/2;
-	           break;
-	        case Directable.SOUTH:
-	            deltaY = BLOC_SIZE1/2;
-	            break;
-	            }
-	      
-	       int xCenter = x * BLOC_SIZE + BLOC_SIZE1/2;
-	       int yCenter = y * BLOC_SIZE + BLOC_SIZE1/2;
-	       g.drawLine(xCenter, yCenter, xCenter + deltaX, yCenter + deltaY); 	   
-	       
-	    }
+	       boolean z = player.getSleepingState();
+	       if(!z) {
+	    	   int x = player.getPosX();
+		       int y = player.getPosY();
+		       int deltaX = 0;
+		       int deltaY = 0;
+		       switch (direction) {
+		       
+		       case Directable.EAST:
+		    	   if(!(Game.mapChanger)) {
+		    	   if(gender == "Male") {
+			    	   drawPlayer(x, y, "adam1", G);
+			    	   deltaX = +BLOC_SIZE1/2;
+		    	   }
+		    	   else {
+		    		   drawPlayer(x, y, "eve1", G);
+			    	   deltaX = +BLOC_SIZE1/2;
+		    	   		}
+		    	   }
+		    	   else {
+		    		   if(gender == "Male") {
+		    			   drawPlayer(x, y, "adam1F", G);
+				    	   deltaX = +BLOC_SIZE1/2;
+		    		   		}
+			    	   else {
+			    		   drawPlayer(x, y, "eve1F", G);
+				    	   deltaX = +BLOC_SIZE1/2;
+		    		   		}
+		    	   }
+		    	   break;
+		       case Directable.NORTH:
+		    	   
+		    	   if(!(Game.mapChanger)) {
+		    	   if(gender == "Male") {
+		    		   drawPlayer(x, y, "adam2", G);
+			           deltaY = -BLOC_SIZE1/2;
+		    	   }
+		    	   else {
+		    		   drawPlayer(x, y, "eve2", G);
+			           deltaY = -BLOC_SIZE1/2;
+		    	   }
+		    	   }
+		    	   else {
+		    		   if(gender == "Male") {
+			    		   drawPlayer(x, y, "adam2F", G);
+				           deltaY = -BLOC_SIZE1/2;
+			    	   }
+			    	   else {
+			    		   drawPlayer(x, y, "eve2F", G);
+				           deltaY = -BLOC_SIZE1/2;
+			    	   }
+		    		   
+		    	   }
+		           break;
+		           
+		       case Directable.WEST:
+		    	   if(!(Game.mapChanger)) {
+		    	   if(gender == "Male") {
+		    		   drawPlayer(x, y, "adam3", G);
+			           deltaX = -BLOC_SIZE1/2;
+		    	   }
+		           else {
+		        	   drawPlayer(x, y, "eve3", G);
+			           deltaX = -BLOC_SIZE1/2; 
+		           }
+		    	   }
+		    	   else {
+		    		   if(gender == "Male") {
+			    		   drawPlayer(x, y, "adam3F", G);
+				           deltaX = -BLOC_SIZE1/2;
+			    	   }
+			           else {
+			        	   drawPlayer(x, y, "eve3F", G);
+				           deltaX = -BLOC_SIZE1/2; 
+			           }
+		    		   
+		    	   }
+		    	   break;
+		    	   
+		       case Directable.SOUTH:
+		        	if(!(Game.mapChanger)) {
+		        	if(gender == "Male") {
+		        		drawPlayer(x, y, "adam4", G);
+			            deltaY = BLOC_SIZE1/2;
+		        	}
+		        	else {
+		        		drawPlayer(x, y, "eve4", G);
+			            deltaY = BLOC_SIZE1/2;
+		        	}
+		        	}
+		        	else {
+				    if(gender == "Male") {
+				        drawPlayer(x, y, "adam4F", G);
+					    deltaY = BLOC_SIZE1/2;
+				      }
+				     else{
+				        drawPlayer(x, y, "eve4F", G);
+					    deltaY = BLOC_SIZE1/2;
+				       }
+		        	}
+
+	       				}  
+		       int xCenter = x * BLOC_SIZE + BLOC_SIZE1/2;
+		       int yCenter = y * BLOC_SIZE + BLOC_SIZE1/2;
+		       g.drawLine(xCenter, yCenter, xCenter + deltaX, yCenter + deltaY); 
+ 
+	       		}
+           	}
+        }
     }
-   
-}    
+         
     
-  
-    
+    public void drawPlayer(int x, int y, String s, Graphics G) {
+    	ImageIcon icon = null;
+        Image image = null;
+        
+       icon = new ImageIcon("Resources/" +s+ ".jpeg");
+	   image = icon.getImage();
+	    G.drawImage(image, x*BLOC_SIZE, y*BLOC_SIZE, BLOC_SIZE1, BLOC_SIZE1, null);
+ 	  
+        
+    }
     
     public void setFarmObjects(ArrayList<FarmGameObjects> farmObjects) {
     	this.farmObjects = farmObjects;
@@ -339,10 +455,8 @@ public class Map extends JPanel {
     }
     
     public void redraw() {
-        this.repaint(); //après avoir bouger, ceci permet de recolorier le carreau du player... 
+        this.repaint(); 
     }
 
-	public void addMouse(Mouse m) {
-		this.mouseController = m;
-	}
+	
 }

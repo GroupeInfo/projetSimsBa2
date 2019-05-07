@@ -1,29 +1,45 @@
 package Model;
+
+import java.util.ArrayList;
+
 public class Player implements Directable {
 
     int energy = 100;
     int Satisfaction = 100;
+    int hygiene = 100;
     int direction = EAST;
     int posX;
     int posY;
     int lifes = 100;
+    private ArrayList<AttackWeapon> Weapons;
     boolean dead = false;
     private boolean SleepingState;
-    private boolean isInFarm;
+    private boolean isInFarm = false;
     private Game g;
+    private String gender;
     protected AttackWeapon currentWeapon = null;
-    protected AttackWeapon sword = null;
+    protected AttackWeapon box ;
+    protected AttackWeapon shovel ;
+    protected AttackWeapon knife; 
+
     private static int FamilyMoney = 250;
+    private static int FamilyFood = 0;
     
-    public Player(int x, int y, Game g) {
+    public Player(int x, int y, Game g, String gender) {
         this.posX = x;
         this.posY = y;
         this.g = g;
+        this.gender = gender;
         
-        AttackWeapon sword = new AttackWeapon(25, 1);
-        this.sword = sword;
+      this.Weapons = new ArrayList<AttackWeapon>();
         
-        currentWeapon = this.sword;
+      this.box =  new AttackWeapon(25, 1, 0);;
+      this.shovel = new AttackWeapon(50, 1, 50);;
+      this.knife = new AttackWeapon(100, 1, 150);;
+        
+      this.Weapons.add(box);
+      currentWeapon = this.box;
+       
     }
 
     public void move(int X, int Y) {
@@ -56,8 +72,6 @@ public class Player implements Directable {
     		lifes = 100;
     	}
     }
-    
-
    ////////////////////////////////////////////////////////////////////////////////////////
 
     public boolean isAtPosition(int x, int y) {
@@ -85,7 +99,7 @@ public class Player implements Directable {
     }
     
     public int getDirection() {
-    return direction;
+    	return direction;
     }
     
     public int getFrontX() {
@@ -146,14 +160,58 @@ public class Player implements Directable {
 	}
 	
 	 public String getCurrentWeapon() {
-	    	if (currentWeapon == sword) {
-	    		return "sword";
+	    	if (currentWeapon == box) {
+	    		return "box";
+	    	}
+	    	else if (currentWeapon == shovel){
+	    		return "shovel";
 	    	}
 	    	else {
-	    		return "gun";
+	    		return "knife";
 	    	}
 	    }
 	 
+	 public void buy(int Money) {
+		int sum = FamilyMoney - Money;
+		if(sum>=0) {
+				if(Money == this.shovel.getPrice()) {
+					if(!this.Weapons.contains(this.shovel)) {
+					this.Weapons.add(this.shovel);
+					FamilyMoney -= Money;
+					}
+				}
+				
+				else {
+					//if(!Weapons.contains(this.knife))
+					Weapons.add(knife);
+					FamilyMoney -= Money;
+				}		
+			}
+		}
+		
+	 public void changeWeapon() {
+			int index = Weapons.indexOf(currentWeapon) +1;
+			int size = Weapons.size();
+			System.out.println(size);
+			System.out.println(index);
+			try {
+			if(index != size) {
+				currentWeapon = Weapons.get(index);
+			     }
+			else {
+				currentWeapon = Weapons.get(0);
+			     }
+			}
+			catch(Exception e) {
+				System.out.println(e);
+			}
+			
+			finally{
+				System.out.println("Tip of the day : if you want a new Weapon, go to Shop!");
+			}
+			}
+		
+	
 	 
 	public int getPlayersWeaponForce() {
     	return currentWeapon.getAttackForce();
@@ -178,16 +236,23 @@ public class Player implements Directable {
 		return SleepingState;
 	}
 	
+	public double getHygiene() {
+		return hygiene/100.0;
+	}
+	
 	public void setDeath() {
 		dead = true;
 	}
 	
-	public boolean isDead(){
-		return dead;
-	}
 	
 	public void addSatisfaction(int ExtraSatisfaction) {
-		this.Satisfaction = this.Satisfaction + ExtraSatisfaction;
+		int sum = this.Satisfaction + ExtraSatisfaction;
+		if((sum) <=100) {
+			Satisfaction += ExtraSatisfaction;
+		}
+		else {
+			Satisfaction = 100;
+		}
 	}
 
 	public void setIsInFarm() {
@@ -201,5 +266,31 @@ public class Player implements Directable {
 	public boolean isInFarmState() {
 		return isInFarm;
 	}
+
+	public void addHygene(int ExtraHygiene) {
+		int sum = this.hygiene + ExtraHygiene;
+		if((sum) <=100) {
+			hygiene += ExtraHygiene;
+		}
+		else {
+			hygiene = 100;
+		}
+		
+	}
+
+	public void addChicken(int value) {
+		this.FamilyFood += value;
+	}
 	
+	public int getFamilyFood() {
+		return FamilyFood;
+	}
+
+	public boolean isDead() {
+		return dead;
+	}
+	
+	public String getGender() {
+		return gender;
+	}
 }

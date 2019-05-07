@@ -2,32 +2,24 @@ package View;
 
 import java.awt.Color;
 
+
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.util.ArrayList;
-
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
 import Model.Player;
-
-import Model.GameObject;
 import Model.Apple;
 import Model.Attachable;
 import Model.EnergyCoin;
-import Model.Game;
-import Model.Player;
 public class GUI extends JPanel {
 	private Player p;
 	private int BAR_LENGTH = 120;
 	private int BAR_WIDTH = 30;
-	private int AVATAR_SIZE = 100;
-	private ArrayList<GameObject> objects = new ArrayList<GameObject>();
 	private ArrayList<Attachable> inventory = new ArrayList<Attachable>();
-	private ArrayList<Player> players = new ArrayList<Player>();
 
-	private boolean playerDead = false;
 
     public GUI() {
         this.setPreferredSize(new Dimension(450, 600));
@@ -35,10 +27,8 @@ public class GUI extends JPanel {
         this.setOpaque(true);
     }
     
-    public void setGUIAttributes(ArrayList<GameObject> objects, ArrayList<Attachable> inventory, ArrayList<Player> players) {
-    	this.objects = objects;
+    public void setGUIAttributes( ArrayList<Attachable> inventory) {
     	this.inventory = inventory;
-    	this.players = players;
     	
     } 
     
@@ -49,83 +39,105 @@ public class GUI extends JPanel {
         ImageIcon icon = new ImageIcon("Resources/SimsPerson.jpg");
         Image image = icon.getImage();
         g.drawImage(image, 150, 50, 100, 100, null);
-        
-        ImageIcon icon1 = new ImageIcon("Resources/like.jpeg");
+         
+		ImageIcon icon1 = new ImageIcon("Resources/Energybar.jpeg");
         Image image1 = icon1.getImage();
-        g.drawImage(image1, 6, 310, 48, 52, null);
+        g.drawImage(image1, 6, 200, 48, 52, null);
+		
+        ImageIcon icon2 = new ImageIcon("Resources/like.jpeg");
+        Image image2 = icon2.getImage();
+        g.drawImage(image2, 6, 310, 48, 52, null);
+        
+        ImageIcon icon3 = new ImageIcon("Resources/Hygiene.jpg");
+        Image image3 = icon3.getImage();
+        g.drawImage(image3, 6, 420, 48, 52, null);
+        
+        ImageIcon icon4 = new ImageIcon("Resources/Punch.png");
+        Image image4 = icon4.getImage();
+        g.drawImage(image4, 26, 800, 48, 52, null);
+        
+        ImageIcon icon5 = new ImageIcon("Resources/Shovel.jpg");
+        Image image5 = icon5.getImage();
+        g.drawImage(image5, 110, 800, 48, 52, null);
+        
+        ImageIcon icon6 = new ImageIcon("Resources/Knife.jpg");
+        Image image6 = icon6.getImage();
+        g.drawImage(image6, 192, 800, 48, 52, null);
+        
+        ImageIcon icon7 = new ImageIcon("Resources/ChickenDead.jpg");
+        Image image7 = icon7.getImage();
+        g.drawImage(image7, 26, 900, 48, 52, null);
+        
+        
 
 		// bars 
         // Energy 
         g.setColor(Color.black);
         g.drawString("ENERGY", 6, 190);//drawString(str, int x, int y)
-        
-        g.setColor(Color.black);
         g.drawString("SATISFACTION", 6, 300);
+        g.drawString("HYGIENE", 6, 410);
         
         g.setColor(Color.RED);
         g.fillRect(60, 210, BAR_LENGTH, BAR_WIDTH);
         g.fillRect(60, 320, BAR_LENGTH, BAR_WIDTH);
+        g.fillRect(60, 440, BAR_LENGTH, BAR_WIDTH);
         
         
         g.setColor(Color.GREEN);
         int length_ok = (int)  Math.round(BAR_LENGTH*p.getEnergy()); //getEnergy du player! elle touche pas à la classe EnergyCoin!! Rien à voir .
         int length1_ok = (int) Math.round(BAR_LENGTH*p.getSatisfaction());
+        int length2_ok = (int) Math.round(BAR_LENGTH*p.getHygiene());
+        
         g.fillRect(60, 210, length_ok, BAR_WIDTH);
         g.fillRect(60, 320, length1_ok, BAR_WIDTH);
-        
+        g.fillRect(60, 440, length2_ok, BAR_WIDTH);
         
         
         //DrawingPLayer
         
-        for(Player player: players) {
-			if (player.isDead() == false) {
-				
-				int playerLife = player.getLifePoints();
-				
-				g.setColor(Color.black);
-				g.drawString("Player's life:", 20, 650);
-				
-				g.setColor(Color.blue);
-				g.drawString(String.valueOf(playerLife) + "%", 170, 650);
-				
-				g.setColor(Color.white);
-				g.fillRect(20, 665, 200, 30); //200 de longeur donc 2*player en bas obligatoire car sinon ca donne la moitié du rectangle (100 ---> 50 par exemple)
-				
-				g.setColor(Color.red);
-				g.fillRect(20, 665, 2*playerLife, 30);
-				
-				String currentWeapon = player.getCurrentWeapon();
-				if (currentWeapon == "sword") {
-					g.fillOval(14, 320, 8, 8);
-				}
-				else {
-					g.fillOval(14, 405, 8, 8);
-				}
-				break;
-			}
+        
 			
+        int playerLife = p.getLifePoints();
+		
+		g.setColor(Color.black);
+		g.drawString("Player's life:", 20, 650);
+		
+		g.setColor(Color.blue);
+		g.drawString(String.valueOf(playerLife) + "%", 170, 650);
+		
+		g.setColor(Color.white);
+		g.fillRect(20, 665, 200, 30); //200 de longeur donc 2*player en bas obligatoire car sinon ca donne la moitié du rectangle (100 ---> 50 par exemple)
+		
+		g.setColor(Color.red);
+		g.fillRect(20, 665, 2*playerLife, 30);
+		
+		String currentWeapon = p.getCurrentWeapon();
+		if (currentWeapon == "box") {
+			g.fillOval(7, 820, 8, 8);
 		}
+		else if(currentWeapon == "shovel"){
+			g.fillOval(100, 820, 8, 8);
+		}
+		else {
+			g.fillOval(180, 820, 8, 8);
+		}
+		
+		g.setColor(Color.BLACK);
+		int food = p.getFamilyFood();
+		g.drawString("x" + String.valueOf(food), 75, 950);
+			
+			
+			
+		
         
         //Money
         
-        double FamilyMoney = players.get(0).getFamilyMoney();
+		double FamilyMoney = p.getFamilyMoney();
         
         g.setColor(Color.black);
         g.drawString("FamilyMoney : ", 20, 740);
         g.drawString(String.valueOf(FamilyMoney), 100, 740);
         
-        //ENERGYCOIN
-        
-        ImageIcon icon2 = null;
-	    Image image2 = null;
-	    for(GameObject object: objects) {
-			
-			if (object instanceof EnergyCoin) {
-				icon2 = new ImageIcon("Resources/Energybar.jpeg");
-            	image2 = icon2.getImage();
-            	g.drawImage(image2, 6, 200, 48, 52, null);
-			}
-			
 		//INVENTORY
 		g.setColor(Color.black);
 		g.drawString("INVENTORY:", 20, 500);
@@ -135,7 +147,7 @@ public class GUI extends JPanel {
 			g.fillRect(20 + i*50, 520, 48, 48);
 			}
 			
-	    }
+	    
 		
 	    for (Object object: inventory) {
 			int position = inventory.indexOf(object);
@@ -167,8 +179,9 @@ public class GUI extends JPanel {
     public void redraw() {
         this.repaint();
     }
-    public void setPlayer(Player p2) {
-		this.p = p2;
+    
+    public void setPlayer(Player p) {
+		this.p = p;
 	}
 
 }

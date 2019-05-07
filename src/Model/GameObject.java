@@ -1,5 +1,5 @@
 package Model;
-import View.Map;
+
 public abstract class GameObject {
     protected int posX;
     protected int posY;

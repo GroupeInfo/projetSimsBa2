@@ -3,16 +3,17 @@ package Model;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class Computer extends GameObject implements Activable, OversizedObject {
-	private int money = 40;
+public class Kitchen extends GameObject implements Activable, OversizedObject, Changeable {
+	private int energy = 10;
+	private int Satisfaction = 100;
 	private Player p;
 	private Game g;
+	private boolean used;
 	private static int count = 0;
 	private static int count1 = 0;
 	private static int waitCount = 0;
-	public Computer(int X, int Y, int widthIntRatio, int heightIntRatio, Game g) {
+	public Kitchen(int X, int Y,  int widthIntRatio, int heightIntRatio, Game g) {
 		super(X,Y,6, widthIntRatio, heightIntRatio);
-		
 		this.g  = g;
 		
 	}
@@ -20,7 +21,6 @@ public class Computer extends GameObject implements Activable, OversizedObject {
 	 public void activate() {
 		 p = g.active_player;
 		 
-		 if(waitCount ==0) {
 		 Timer timer = new Timer();
 		 TimerTask task = new TimerTask() {
 				public void run() {
@@ -30,17 +30,17 @@ public class Computer extends GameObject implements Activable, OversizedObject {
 				g.addPlayerToSleepingObjects(p);
 				p.setSleepingState();
 				count1++;
+				used = true;
 				
 			}
-		 
+				
 			      };
 			timer.schedule(task,0,1000);  
-		 }
 			
 		}
 	 
-	 public int getComputerMoney() {
-		 return(money);
+	 public int getShowerEnergy() {
+		 return(energy);
 	 }
 	 
 	 public void StartAndEnd() {
@@ -48,14 +48,15 @@ public class Computer extends GameObject implements Activable, OversizedObject {
 		 TimerTask desTask = new TimerTask() {
 			 
 			 public void run() {
-				 if(count == 7) {
+				 if(count == 4) {
 					 p.setAwakeState();
-					 p.addMoney(getComputerMoney());
+					 p.addEnergy(getShowerEnergy());
+					 p.addSatisfaction(getSatisfaction());
+					 used = false;
 					 
 					 g.removePlayerFromSleepingObjects(p);
 					 
 					 destimer.cancel();
-					 initializingWaitTime();
 					 count = 0;
 				 }
 				 else {
@@ -71,7 +72,7 @@ public class Computer extends GameObject implements Activable, OversizedObject {
 		 TimerTask waitTimerTask = new TimerTask() {
 			 
 			 public void run() {
-				 if(waitCount == 180) {
+				 if(waitCount == 600) {
 					 waitTimer.cancel();
 					 waitCount = 0;
 				 }
@@ -82,26 +83,26 @@ public class Computer extends GameObject implements Activable, OversizedObject {
 		 };
 		 waitTimer.schedule(waitTimerTask,0,1000);
 	 }
-	 
-	 
+
 	 public boolean isObstacle(){
 		 return(true);
 	 }
+	
 	 
-	 public int getExtraMoney() {
-		 return(money);
+	 public int getSatisfaction() {
+		 return Satisfaction;
 	 }
 	 
-	 public void addMoneyToPlayer() {
-		p.addMoney(money);
+	 public void addSatisfactionToPlayer() {
+		p.addEnergy(Satisfaction);
 	 }
 	 
 	 public boolean isInObjectSpace(int x, int y) {
 	    	boolean z = false;
-	    	int k1 = this.getPosX(); 
-	    	int k2  = this.getPosY() ;
-	    	int k3 = this.getWidthRatio() ; 
-	    	int k4 =  this.getHeightRatio();
+	    	int k1 = getPosX(); 
+	    	int k2  = getPosY() ;
+	    	int k3 = getWidthRatio() ; 
+	    	int k4 =  getHeightRatio();
 	    	for(int i = k1; i < k1+k3 ;i++) {
 				for(int j = k2; j<k2+k4; j++){
 					int x1 = i;
@@ -111,7 +112,13 @@ public class Computer extends GameObject implements Activable, OversizedObject {
 				}
 			}
 		}	
+	    	
 	    	return z;
 	  }
+
+	@Override
+	public boolean isUsed() {
+		return used;
+	}
 }
 

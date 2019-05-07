@@ -9,12 +9,12 @@ public class Apple extends GameObject implements Attachable, Activable, Deletabl
 	private Player p;
 	public Apple(int X, int Y, Player player) {
 		super(X,Y,6,1,1);
-		this.p = player;
+		p = player;
 		
 	}
 	 public void activate() {
-		 p.addEnergy(this.AppleEnergy);
-		 p.addSatisfaction(this.AppleSatisfaction);
+		 p.addEnergy(AppleEnergy);
+		 p.addSatisfaction(AppleSatisfaction);
 	 }
 	 public boolean isObstacle(){
 		 return(true);

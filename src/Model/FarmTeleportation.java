@@ -6,13 +6,13 @@ public class FarmTeleportation  {
 	private int posY;
 	
 	public FarmTeleportation(int x, int y, Player player) {
-		this.posX = x;
-		this.posY = y;
+		posX = x;
+		posY = y;
 		this.player = player;
 	}
 	
 	  public boolean isAtPosition(int x, int y) {
-	        return this.posX == x && this.posY == y;
+	        return posX == x && posY == y;
 	    }
 	
 }

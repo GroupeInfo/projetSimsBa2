@@ -1,13 +1,7 @@
 package Model;
 
-import java.io.File;
 import java.util.ArrayList;
 
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-
-import View.Buttons;
-import View.Window;
 
 //Enemy takes a player as an argument due to the thread containing moveEnemy and enemyAttacksPlayer
 
@@ -18,20 +12,22 @@ public class Chicken extends FarmGameObjects implements Directable, Activable, D
 	
 	private static int sleeptime = 500;
 	private Thread t;
-	private Player active_player = null;
+	private Player enemy = null;
 	private int lifes = 100;
 	private int direction = EAST;
 	private Game game = null;
 	private AttackWeapon weapon = null;
 	private static int damage = 10;
 	private boolean Alive = true;
+	private int value = 100;
 	//private Player player;
 	public Chicken(int x, int y, Game game, ArrayList<Player> chickenPlayers) {
 		super(x, y, 6, 1, 1);
 		this.game = game;
-		this.setChickenPlayers(chickenPlayers);
+		setChickenPlayers(chickenPlayers);
+		
 		//Ennemy has a sword as a weapon
-		AttackWeapon sword = new AttackWeapon(25, 1);
+		AttackWeapon sword = new AttackWeapon(25, 1, 0);
 		weapon = sword;
 		
 		//Initializing thread
@@ -55,17 +51,20 @@ public class Chicken extends FarmGameObjects implements Directable, Activable, D
 			try {
 				if (game.getEndGame() == false) {
 					for(Player player : players) {
+					
+						
 						boolean PF = player.isInFarmState() ;
 						if(PF) {
-							this.active_player = player;
+							enemy = player;
+							break;
 						}
 						else {
-							this.active_player = null;
+							enemy = null;
 						}
-						break;
+						
 					}
 
-					if(this.active_player != null) {
+					if(enemy != null) {
 					Thread.sleep(sleeptime);
 					enemyAttacksPlayer();
 					moveEnemyX();
@@ -83,7 +82,7 @@ public class Chicken extends FarmGameObjects implements Directable, Activable, D
 	
 	//No setLifes() required as the method activates() is taking care of changing the life.
 	public int getLifes() {
-		return this.lifes;
+		return lifes;
 	}
 	
 	public int getDirection() {
@@ -105,27 +104,44 @@ public class Chicken extends FarmGameObjects implements Directable, Activable, D
     @Override
     public void activate() {
     	//attackForce is negative
-    	int attackForce = game.getPlayersWeaponForce();
+    	int attackForce = enemy.getPlayersWeaponForce();
     	if (lifes <= Math.abs(attackForce)) {
-    		crush();
     		Alive = false;
+    		crush();
+    		enemy.addChicken(value);
+    		if(remainingEnemies() == false) {
+    			game.setLevel();
+    			game.createChickens();
+    		}
     		}    			
     	else {
     		lifes = lifes + attackForce;
     	}
     }
     
+    public boolean remainingEnemies() {
+    	boolean z = false;
+    	ArrayList<FarmGameObjects> farmGameObjects = game.getFarmGameObjects();
+    	for(FarmGameObjects farmObject : farmGameObjects) {
+    		if(farmObject instanceof Chicken) {
+    			z = true;
+    			break;
+    		}	
+    	}
+    	return z;
+    }
+    
     private void moveEnemyX() {
-		int playerX = active_player.getPosX();
-		int chickenX = this.getPosX();
+		int playerX = enemy.getPosX();
+		int chickenX = getPosX();
 		int dx = Math.abs(playerX - chickenX);
 		int nextX;
 		int nextY;
 		boolean obstacle = false;
 		
 		if (playerX > chickenX) {
-    		nextX = this.getPosX() +1;
-    		nextY = this.getPosY();
+    		nextX = getPosX() +1;
+    		nextY = getPosY();
     		
     		for (FarmGameObjects object: game.farmObjects) {
     			if (object.isAtPosition(nextX, nextY)) {
@@ -144,14 +160,14 @@ public class Chicken extends FarmGameObjects implements Directable, Activable, D
     			
     		}
     		if (obstacle == false) {
-	    		this.setPosX(nextX);
+	    		setPosX(nextX);
 			}
-    		this.setDirection(0);
+    		setDirection(0);
     	}
 		
 		else if (playerX < chickenX) {
-    		nextX = this.getPosX() -1;
-    		nextY = this.getPosY();
+    		nextX = getPosX() -1;
+    		nextY = getPosY();
     		
     		for (FarmGameObjects object: game.farmObjects) {
     			if (object.isAtPosition(nextX, nextY)) {
@@ -171,9 +187,9 @@ public class Chicken extends FarmGameObjects implements Directable, Activable, D
     		}
     		
     		if (obstacle == false) {
-	    		this.setPosX(nextX);
+	    		setPosX(nextX);
 			}
-			this.setDirection(2);
+			setDirection(2);
     	}
 		
 		game.notifyView();
@@ -182,16 +198,16 @@ public class Chicken extends FarmGameObjects implements Directable, Activable, D
     
 	private void moveEnemyY() {
 		
-    	int playerY = game.getPlayerY();
-    	int chickenY = this.getPosY();
+    	int playerY = enemy.getPosY();
+    	int chickenY = getPosY();
     	int dy = Math.abs(playerY - chickenY);
     	int nextX;
     	int nextY;
     	boolean obstacle = false;
     	
     	if (playerY > chickenY) {
-    		nextX = this.getPosX();
-    		nextY = this.getPosY() + 1;
+    		nextX = getPosX();
+    		nextY = getPosY() + 1;
     		
     		for (FarmGameObjects object: game.farmObjects) {
     			if (object.isAtPosition(nextX, nextY)) {
@@ -211,14 +227,14 @@ public class Chicken extends FarmGameObjects implements Directable, Activable, D
     		}
     		
     		if (obstacle == false) {
-	    		this.setPosY(nextY);
+	    		setPosY(nextY);
 			}
-			this.setDirection(3);
+			setDirection(3);
     	}
     	
     	else if (playerY < chickenY) {
-    		nextX = this.getPosX();
-    		nextY = this.getPosY() -1;
+    		nextX = getPosX();
+    		nextY = getPosY() -1;
     		
     		for (FarmGameObjects object: game.farmObjects) {
     			if (object.isAtPosition(nextX, nextY)) {
@@ -237,9 +253,9 @@ public class Chicken extends FarmGameObjects implements Directable, Activable, D
     			
     		}
     		if (obstacle == false) {
-	    		this.setPosY(nextY);
+	    		setPosY(nextY);
 			}
-			this.setDirection(1);
+			setDirection(1);
     	}
     	game.notifyView();
     }
@@ -247,20 +263,26 @@ public class Chicken extends FarmGameObjects implements Directable, Activable, D
 	
 	
 	private void enemyAttacksPlayer() {
-		int dx = Math.abs(game.getPlayerX()- this.getPosX());
-		int dy = Math.abs(game.getPlayerY()- this.getPosY());
+		int dx = Math.abs(enemy.getPosX()- getPosX());
+		int dy = Math.abs(enemy.getPosY()- getPosY());
 		if ((dx == 0 && dy == 1) || (dy == 0 && dx == 1 )) {
-			game.hurtPlayer(this.damage);
+			if(enemy.getLifePoints() < damage) {
+				players.remove(enemy);
+				game.killPlayer(enemy);
+				if(players.size() == 0) {
+					game.setEndGame();
+				}
+			}
+			enemy.removeLifePoints(damage);
+			
 		}
-		else {
-		}
+		
 
 	}
 	
     
     
 	public void crush() {
-		
 		notifyDeletableObserver();
 	}
 
@@ -269,11 +291,9 @@ public class Chicken extends FarmGameObjects implements Directable, Activable, D
 		observers.add(po);
 	}
 
-	@Override
+
 	public void notifyDeletableObserver() {
-		int i = 0;
 		for (DeletableObserver object: observers) {
-			i++;
 			object.delete(this, null);
 		}
 	}
@@ -288,6 +308,10 @@ public class Chicken extends FarmGameObjects implements Directable, Activable, D
 	
 	public static void setChickenDamage(int difficulity) {
 		damage = difficulity; 
+	}
+	
+	public AttackWeapon getChickenAttackWeapon() {
+		return weapon;
 	}
 	
 }

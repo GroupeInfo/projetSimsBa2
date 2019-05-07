@@ -28,8 +28,8 @@ public class Window extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setBounds(0, 0,2000, 2000);
         this.getContentPane().setBackground(Color.gray);   
-        groupPanel.add(map, BorderLayout.LINE_START);
-        groupPanel.add(GUI, BorderLayout.LINE_END);
+        groupPanel.add(map, BorderLayout.LINE_START);//start drawing from the beginning
+        groupPanel.add(GUI, BorderLayout.LINE_END); //start drawing from the end
         this.getContentPane().add(this.groupPanel);
         this.setVisible(true);
     	}
@@ -60,12 +60,8 @@ public class Window extends JFrame {
         this.GUI.redraw();
     }
 
-    public void setKeyListener(KeyListener keyboard) {
+   public void setKeyListener(KeyListener keyboard) {
         this.map.addKeyListener(keyboard);
-    }
-
-    public void setMouseListener(Mouse m) {
-        this.map.addMouse(m);
     }
 
 	public int getHouseSize() {
@@ -76,12 +72,9 @@ public class Window extends JFrame {
 		return map.OUTSIDE_SIZEX;
 	}
 	
-	public int getOutsideSizeY() {
-		return map.OUTSIDE_SIZEY;
-	}
 	
-	public void setGuiAttributes(ArrayList<GameObject> objects, ArrayList<Attachable> inventory, ArrayList<Player> players) {
-		GUI.setGUIAttributes(objects, inventory,  players);
+	public void setGuiAttributes(ArrayList<Attachable> inventory) {
+		GUI.setGUIAttributes(inventory);
 	}
 	
 	public void setPlayer(Player p) {

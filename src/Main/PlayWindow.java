@@ -1,6 +1,7 @@
 package Main;
 
 import javax.swing.JButton;
+
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -86,19 +87,22 @@ public class PlayWindow extends JFrame{
 		A.setBounds(50, 350, 200, 20);
 		panel.add(A);
 		/////////////////////////////////////////////////////////////////////////
+		JLabel Shift = new JLabel("Shift : Change Weapon");
+		Shift.setBounds(50, 380, 200, 20);
+		panel.add(Shift);
+		/////////////////////////////////////////////////////////////////////////
 		JLabel Q = new JLabel("Q : Quit Game");
-		Q.setBounds(150, 400, 300, 20);
+		Q.setBounds(150, 450, 300, 20);
 		panel.add(Q);
-		
 		
 		
 		frame.add(panel);
 		frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		frame.setBounds(100, 100, 430, 600);
-//		frame.setSize(430, 600);
 		frame.setVisible(true);
 		
 		
 	}
 
+	
 }

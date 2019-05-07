@@ -1,5 +1,5 @@
 package Model;
 
 public interface Sounds {
-	void playSound() ;
+	void playSound(String PPath) ;
 }

@@ -1,6 +1,11 @@
 package Model;
 
-public class Door extends GameObject implements Activable {
+import java.io.File;
+
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+
+public class Door extends GameObject implements Activable, Changeable, Sounds {
 	private boolean opened = false;
 	private Player p;
 	
@@ -12,11 +17,12 @@ public class Door extends GameObject implements Activable {
 	@Override
 	public void activate() {
 		if(this.opened  == false) {
-			this.opened = true;
+			opened = true;
+			playSound("Resources/Sounds/doorclose.wav");
 		}
 		
 		else {
-			this.opened = false;
+			opened = false;
 		}
 		
 	}
@@ -25,7 +31,7 @@ public class Door extends GameObject implements Activable {
 	public boolean isObstacle() {
 		boolean z;
 		// TODO Auto-generated method stub
-		if(this.opened == true) {
+		if(opened == true) {
 			z = false;
 		}
 		else {
@@ -34,8 +40,24 @@ public class Door extends GameObject implements Activable {
 		return z;
 	}
 
-	public boolean isOpened() {
-		return opened;
+	
+
+	@Override
+	public boolean isUsed() {
+		return  opened;
 	}
 
+	public  void playSound(String file) {
+		File voice = new File(file);
+		
+		try {
+			Clip clip = AudioSystem.getClip();
+			clip.open(AudioSystem.getAudioInputStream(voice));
+			clip.start();
+		}
+		
+		catch(Exception e) {
+			
+		}
+	}
 }

@@ -20,9 +20,8 @@ public class Keyboard implements KeyListener {
     		
     	
 	        int key = event.getKeyCode();
-	        //System.out.println(key); on peut travailler sur ca pour l'energie
 	
-	        switch (key) {  //qu'est ce qu'on va faire avec key ?--> la méthode switch s'en occupe quand on met switch(key)...
+	        switch (key) { 
 	       
 	        case KeyEvent.VK_RIGHT :
 	            game.movePlayer(1, 0);
@@ -65,8 +64,15 @@ public class Keyboard implements KeyListener {
 	       	 	 break;
 	        case KeyEvent.VK_A:
 	        	game.addToInventory();
+	        	break;
+	        case KeyEvent.VK_SHIFT:
+	        	game.setPlayerWeapon();
+	        	break;
+	        case KeyEvent.VK_M:
+	        	game.changePlayer();
+	        	break;
 	        }
-	      }
+    	}
         
       }
     	

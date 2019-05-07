@@ -4,20 +4,21 @@ import java.util.ArrayList;
 import View.Map;
 import java.util.Timer;
 import java.util.TimerTask;
-public class Bed extends GameObject implements Activable, OversizedObject{
+public class Bed extends GameObject implements Activable, OversizedObject, Changeable{
 	private int energy = 40;
 	private Player p;
 	private Game g;
+	private boolean used;
 	private static int count = 0;
 	private static int count1 = 0;
-	public Bed(int X, int Y, Player player, int widthIntRatio, int heightIntRatio, Game g) {
+	public Bed(int X, int Y,  int widthIntRatio, int heightIntRatio, Game g) {
 		super(X,Y,6, widthIntRatio, heightIntRatio);
-		this.p = player;
 		this.g  = g;
 		
 	}
 	
 	 public void activate() {
+		 p = g.active_player;
 		 
 		 Timer timer = new Timer();
 		 TimerTask task = new TimerTask() {
@@ -25,10 +26,10 @@ public class Bed extends GameObject implements Activable, OversizedObject{
 				if(count1 >= 1) {
 				timer.cancel();
 				StartAndEnd();}
-				g.removePlayerFromPlayers(p);
 				g.addPlayerToSleepingObjects(p);
 				p.setSleepingState();
 				count1++;
+				used = true;
 				
 			}
 				
@@ -38,7 +39,7 @@ public class Bed extends GameObject implements Activable, OversizedObject{
 		}
 	 
 	 public int getBedEnergy() {
-		 return(this.energy);
+		 return(energy);
 	 }
 	 
 	 public void StartAndEnd() {
@@ -49,9 +50,9 @@ public class Bed extends GameObject implements Activable, OversizedObject{
 				 if(count >=5) {
 					 p.setAwakeState();
 					 p.addEnergy(getBedEnergy());
+					 used = false;
 					 
 					 g.removePlayerFromSleepingObjects(p);
-					 g.addPlayerToPlayers(p);
 					 
 					 destimer.cancel();
 					 count = 0;
@@ -74,15 +75,15 @@ public class Bed extends GameObject implements Activable, OversizedObject{
 	 }
 	 
 	 public void addEnergyToPlayer() {
-		p.addEnergy(this.energy);
+		p.addEnergy(energy);
 	 }
 	 
 	 public boolean isInObjectSpace(int x, int y) {
 	    	boolean z = false;
-	    	int k1 = this.getPosX(); 
-	    	int k2  = this.getPosY() ;
-	    	int k3 = this.getWidthRatio() ; 
-	    	int k4 =  this.getHeightRatio();
+	    	int k1 = getPosX(); 
+	    	int k2  = getPosY() ;
+	    	int k3 = getWidthRatio() ; 
+	    	int k4 =  getHeightRatio();
 	    	for(int i = k1; i < k1+k3 ;i++) {
 				for(int j = k2; j<k2+k4; j++){
 					int x1 = i;
@@ -95,4 +96,9 @@ public class Bed extends GameObject implements Activable, OversizedObject{
 	    	
 	    	return z;
 	  }
+
+	@Override
+	public boolean isUsed() {
+		return used;
+	}
 }
