@@ -5,8 +5,6 @@ public class BlockUnbreakableFarm extends FarmGameObjects {
 		super(X, Y, color, width, height);
 	}
 
-  
-
 	@Override
     public boolean isObstacle() {
         return true;

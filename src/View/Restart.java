@@ -2,49 +2,70 @@ package View;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
 
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import Controller.Mouse;
-import View.ShopMenu.ShopMap;
+import Main.PlayWindow;
+import Model.Game;
+import Model.Sounds;
+import View.ShopMenu;
+import View.ShopMap;
 
 
-public class Restart extends JFrame {
+public class Restart extends JFrame implements ActionListener {
 	private JPanel groupPanel = new JPanel(new BorderLayout());
+	private GameOver GameOver = new GameOver();
 	private JButton Button;
-	private JButton Button1;
-	private Mouse mouse;
-	
-	public Restart (String title) {
-		super("Shop");
+ 
+
+	public Restart() {
+		super("Restart");
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        this.setBounds(2000, 2000 , 550, 500);
+        this.setBounds(500, 500, 1000, 500);
         this.getContentPane().setBackground(Color.gray);
-        groupPanel.add(this, BorderLayout.LINE_START);
-        
+        groupPanel.add(GameOver, BorderLayout.LINE_START);
 		
-		Button = new JButton("Restart");
-        Button.setBounds(0, 400, 260, 50);
+        Button = new JButton("RESTART");
+        Button.setBounds(5, 410, 260, 50);
+        Button.addActionListener(this);
 		add(Button);
-			}
+        
+        this.getContentPane().add(this.groupPanel);
+        this.setVisible(true);
+   
+    	}
+
+		public void update() {
+	        this.GameOver.redraw();
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			this.dispose();
+			PlayWindow play = new PlayWindow();	
+		}
+
+
+	
+}
+
+	
 	
     
-	}
-	/*public void addRestart(JFrame window) {
-		JButton restartButton = new JButton("Restart");
-		restartButton.setBounds(150, 30, 150, 200);
-    	restartButton.addActionListener(new ActionListener() {
-			
-			public void actionPerformed(ActionEvent e) {
-				frame.dispose();
-				window.dispose();
-			}
-    	});
-    	frame.setLayout(new BorderLayout());
-    	frame.add(restartButton, BorderLayout.CENTER);
-	}*/
+
+
 	
 	
 	

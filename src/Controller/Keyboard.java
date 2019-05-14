@@ -42,10 +42,13 @@ public class Keyboard implements KeyListener {
 	             game.stop();
 	             break;
 	         case KeyEvent.VK_T:
-	             game.tirePlayer();
+	             game.makePlayerTired();
 	             break;
 	         case KeyEvent.VK_Y:
 	        	 game.makePlayerHungry();
+	        	 break;
+	         case KeyEvent.VK_U:
+	        	 game.makePlayerDirty();
 	        	 break;
 	        case KeyEvent.VK_P:
 	             game.playerPos();

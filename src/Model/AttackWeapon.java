@@ -1,9 +1,9 @@
 package Model;
 
 public class AttackWeapon {
-	private int attackForce;
-	private int attackRange;
-	private int price;
+	private final int attackForce;
+	private final int attackRange;
+	private final int price;
 	
 	
 	public AttackWeapon(int force, int range, int price) {

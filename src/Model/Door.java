@@ -7,7 +7,6 @@ import javax.sound.sampled.Clip;
 
 public class Door extends GameObject implements Activable, Changeable, Sounds {
 	private boolean opened = false;
-	private Player p;
 	
 	public Door(int X, int Y, int color) {
 		super(X, Y, color, 0, 0);
@@ -18,11 +17,12 @@ public class Door extends GameObject implements Activable, Changeable, Sounds {
 	public void activate() {
 		if(this.opened  == false) {
 			opened = true;
-			playSound("Resources/Sounds/doorclose.wav");
+			playSound("Resources/Sounds/dooropen.wav");
 		}
 		
 		else {
 			opened = false;
+			playSound("Resources/Sounds/doorclose.wav");
 		}
 		
 	}

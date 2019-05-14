@@ -1,27 +1,30 @@
 package Model;
 
+import java.io.File;
 import java.util.ArrayList;
+
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 
 
 //Enemy takes a player as an argument due to the thread containing moveEnemy and enemyAttacksPlayer
 
-public class Chicken extends FarmGameObjects implements Directable, Activable, Deletable, Runnable{
-	
+public class Chicken extends FarmGameObjects implements Directable, Activable, Deletable, Runnable, Sounds{
 	private ArrayList<DeletableObserver> observers = new ArrayList<DeletableObserver>();
-	private ArrayList<Player> players = new ArrayList<Player>();
-	
-	private static int sleeptime = 500;
+	private ArrayList<Parent> players = new ArrayList<Parent>();
+	private int sleeptime = 500;
 	private Thread t;
-	private Player enemy = null;
+	private Parent enemy = null;
 	private int lifes = 100;
 	private int direction = EAST;
 	private Game game = null;
 	private AttackWeapon weapon = null;
 	private static int damage = 10;
+	private static int chickenKilled = 0;
 	private boolean Alive = true;
 	private int value = 100;
 	//private Player player;
-	public Chicken(int x, int y, Game game, ArrayList<Player> chickenPlayers) {
+	public Chicken(int x, int y, Game game, ArrayList<Parent> chickenPlayers) {
 		super(x, y, 6, 1, 1);
 		this.game = game;
 		setChickenPlayers(chickenPlayers);
@@ -34,7 +37,7 @@ public class Chicken extends FarmGameObjects implements Directable, Activable, D
 		t = new Thread(this);
 		t.start();
 		//Adding enemy to "objects"
-		this.game.farmObjects.add(this);
+		this.game.getFarmGameObjects().add(this);
 		
 	}
 	
@@ -50,9 +53,7 @@ public class Chicken extends FarmGameObjects implements Directable, Activable, D
 		while (Alive) {
 			try {
 				if (game.getEndGame() == false) {
-					for(Player player : players) {
-					
-						
+					for(Parent player : players) {	
 						boolean PF = player.isInFarmState() ;
 						if(PF) {
 							enemy = player;
@@ -67,9 +68,9 @@ public class Chicken extends FarmGameObjects implements Directable, Activable, D
 					if(enemy != null) {
 					Thread.sleep(sleeptime);
 					enemyAttacksPlayer();
-					moveEnemyX();
+					moveChickenX();
 					Thread.sleep(sleeptime);
-					moveEnemyY();
+					moveChickenY();
 					}
 				}
 				
@@ -93,33 +94,59 @@ public class Chicken extends FarmGameObjects implements Directable, Activable, D
     	this.direction = direction;
     }
 
-	public static int getSleeptime() {
+	public  int getSleeptime() {
 		return sleeptime;
 	}
 	
-	public static void setSleeptime(int sleepTime) {
+	public void setSleeptime(int sleepTime) {
 		sleeptime = sleepTime;
 	}
     
     @Override
     public void activate() {
-    	//attackForce is negative
-    	int attackForce = enemy.getPlayersWeaponForce();
-    	if (lifes <= Math.abs(attackForce)) {
-    		Alive = false;
-    		crush();
-    		enemy.addChicken(value);
-    		if(remainingEnemies() == false) {
-    			game.setLevel();
-    			game.createChickens();
+    	try {
+	    	int attackForce = enemy.getPlayersWeaponForce();
+    		String AW = enemy.getCurrentWeapon();
+
+	    	if(AW == "punch" ) {
+    			playSound("Resources/Sounds/punch.wav");
     		}
-    		}    			
-    	else {
-    		lifes = lifes + attackForce;
+    		else if(AW == "knife") {
+    			playSound("Resources/Sounds/knife.wav");
+    		}
+    		else {
+    			playSound("Resources/Sounds/shovel.wav");
+    		}
+	    	if (lifes <= Math.abs(attackForce)) {
+	    		Alive = false;
+	    		crush();
+	    		chickenKilled += 1;
+	    		enemy.addChicken(value);
+	    		if(remainingEnemies() == false) {
+	    			game.setLevel();
+	    			game.createChickens();
+	    		}
+	    		}    			
+	    	else {
+	    		lifes = lifes + attackForce;	    		
+	    		}
+    	}
+    	catch(Exception e) {
+    		System.out.println("You cant attack with a baby!");
     	}
     }
     
-    public boolean remainingEnemies() {
+    public static int getChickenKilled() {
+		return chickenKilled;
+	}
+
+
+	public static void setChickenKilled(int chickenKilled) {
+		Chicken.chickenKilled = chickenKilled;
+	}
+
+
+	public boolean remainingEnemies() {
     	boolean z = false;
     	ArrayList<FarmGameObjects> farmGameObjects = game.getFarmGameObjects();
     	for(FarmGameObjects farmObject : farmGameObjects) {
@@ -131,7 +158,7 @@ public class Chicken extends FarmGameObjects implements Directable, Activable, D
     	return z;
     }
     
-    private void moveEnemyX() {
+    private void moveChickenX() {
 		int playerX = enemy.getPosX();
 		int chickenX = getPosX();
 		int dx = Math.abs(playerX - chickenX);
@@ -143,7 +170,7 @@ public class Chicken extends FarmGameObjects implements Directable, Activable, D
     		nextX = getPosX() +1;
     		nextY = getPosY();
     		
-    		for (FarmGameObjects object: game.farmObjects) {
+    		for (FarmGameObjects object: game.getFarmGameObjects()) {
     			if (object.isAtPosition(nextX, nextY)) {
     				obstacle = object.isObstacle();
     			}
@@ -169,7 +196,7 @@ public class Chicken extends FarmGameObjects implements Directable, Activable, D
     		nextX = getPosX() -1;
     		nextY = getPosY();
     		
-    		for (FarmGameObjects object: game.farmObjects) {
+    		for (FarmGameObjects object: game.getFarmGameObjects()) {
     			if (object.isAtPosition(nextX, nextY)) {
     				obstacle = object.isObstacle();
     			}
@@ -196,7 +223,7 @@ public class Chicken extends FarmGameObjects implements Directable, Activable, D
 	}
     
     
-	private void moveEnemyY() {
+	private void moveChickenY() {
 		
     	int playerY = enemy.getPosY();
     	int chickenY = getPosY();
@@ -209,7 +236,7 @@ public class Chicken extends FarmGameObjects implements Directable, Activable, D
     		nextX = getPosX();
     		nextY = getPosY() + 1;
     		
-    		for (FarmGameObjects object: game.farmObjects) {
+    		for (FarmGameObjects object: game.getFarmGameObjects()) {
     			if (object.isAtPosition(nextX, nextY)) {
     				obstacle = object.isObstacle();
     			}
@@ -236,7 +263,7 @@ public class Chicken extends FarmGameObjects implements Directable, Activable, D
     		nextX = getPosX();
     		nextY = getPosY() -1;
     		
-    		for (FarmGameObjects object: game.farmObjects) {
+    		for (FarmGameObjects object: game.getFarmGameObjects()) {
     			if (object.isAtPosition(nextX, nextY)) {
     				obstacle = object.isObstacle();
     			}
@@ -274,6 +301,7 @@ public class Chicken extends FarmGameObjects implements Directable, Activable, D
 				}
 			}
 			enemy.removeLifePoints(damage);
+			playSound("Resources/Sounds/chicken.wav");
 			
 		}
 		
@@ -298,7 +326,7 @@ public class Chicken extends FarmGameObjects implements Directable, Activable, D
 		}
 	}
 	
-	public void setChickenPlayers(ArrayList<Player> players) {
+	public void setChickenPlayers(ArrayList<Parent> players) {
 		this.players = players;
 	}
 	
@@ -312,6 +340,20 @@ public class Chicken extends FarmGameObjects implements Directable, Activable, D
 	
 	public AttackWeapon getChickenAttackWeapon() {
 		return weapon;
+	}
+	
+	public void playSound(String Path) {
+		File voice = new File(Path);
+		
+		try {
+			Clip clip = AudioSystem.getClip();
+			clip.open(AudioSystem.getAudioInputStream(voice));
+			clip.start();
+		}
+		
+		catch(Exception e) {
+			
+		}
 	}
 	
 }

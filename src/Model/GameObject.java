@@ -1,11 +1,11 @@
 package Model;
 
 public abstract class GameObject {
-    protected int posX;
-    protected int posY;
-    protected int color;
-    protected int width;
-    protected int height;
+    private int posX;
+    private int posY;
+    private int color;
+    private int width;
+    private int height;
 
     public GameObject(int X, int Y, int color, int width, int height) {
         this.posX = X;

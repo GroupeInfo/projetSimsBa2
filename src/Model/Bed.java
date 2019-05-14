@@ -1,16 +1,20 @@
 package Model;
 
+import java.io.File;
 import java.util.ArrayList;
 import View.Map;
 import java.util.Timer;
 import java.util.TimerTask;
-public class Bed extends GameObject implements Activable, OversizedObject, Changeable{
+
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+public class Bed extends GameObject implements Activable, OversizedObject, Changeable, Sounds{
 	private int energy = 40;
 	private Player p;
 	private Game g;
 	private boolean used;
-	private static int count = 0;
-	private static int count1 = 0;
+	private int count = 0;
+	private int count1 = 0;
 	public Bed(int X, int Y,  int widthIntRatio, int heightIntRatio, Game g) {
 		super(X,Y,6, widthIntRatio, heightIntRatio);
 		this.g  = g;
@@ -18,12 +22,13 @@ public class Bed extends GameObject implements Activable, OversizedObject, Chang
 	}
 	
 	 public void activate() {
-		 p = g.active_player;
+		 p = g.getActive_player();
 		 
 		 Timer timer = new Timer();
 		 TimerTask task = new TimerTask() {
 				public void run() {
 				if(count1 >= 1) {
+				playSound("Resources/Sounds/snore.wav");
 				timer.cancel();
 				StartAndEnd();}
 				g.addPlayerToSleepingObjects(p);
@@ -100,5 +105,19 @@ public class Bed extends GameObject implements Activable, OversizedObject, Chang
 	@Override
 	public boolean isUsed() {
 		return used;
+	}
+	
+	public  void playSound(String file) {
+		File voice = new File(file);
+		
+		try {
+			Clip clip = AudioSystem.getClip();
+			clip.open(AudioSystem.getAudioInputStream(voice));
+			clip.start();
+		}
+		
+		catch(Exception e) {
+			
+		}
 	}
 }

@@ -10,14 +10,21 @@ import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
+import org.omg.CORBA.portable.ValueBase;
+
 import Model.Player;
+import Model.Trash;
 import Model.Apple;
 import Model.Attachable;
+import Model.Baby;
+import Model.Diaper;
 import Model.EnergyCoin;
+import Model.Parent;
 public class GUI extends JPanel {
 	private Player p;
-	private int BAR_LENGTH = 120;
+	private int BAR_LENGTH = 240;
 	private int BAR_WIDTH = 30;
+	private int timeLeft = 0;
 	private ArrayList<Attachable> inventory = new ArrayList<Attachable>();
 
 
@@ -27,19 +34,30 @@ public class GUI extends JPanel {
         this.setOpaque(true);
     }
     
-    public void setGUIAttributes( ArrayList<Attachable> inventory) {
-    	this.inventory = inventory;
-    	
-    } 
     
 	public void paint(Graphics g) {
 		super.paintComponent(g);
 		
 		//draw avatar
-        ImageIcon icon = new ImageIcon("Resources/SimsPerson.jpg");
-        Image image = icon.getImage();
-        g.drawImage(image, 150, 50, 100, 100, null);
-         
+		if(p instanceof Parent) {
+	        if(p.getGender() == "Male") {
+	        	ImageIcon icon = new ImageIcon("Resources/SimsBoy.webp");
+		        Image image = icon.getImage();
+		        g.drawImage(image, 150, 50, 150, 100, null);
+	        }
+	        else {
+	        	ImageIcon icon = new ImageIcon("Resources/SimsGirl.png");
+		        Image image = icon.getImage();
+		        g.drawImage(image, 150, 50, 150, 100, null);	
+	        	}
+			}
+		
+		else if(p instanceof Baby) {
+		    ImageIcon icon = new ImageIcon("Resources/SimsBaby.jpg");
+	        Image image = icon.getImage();
+	        g.drawImage(image, 150, 50, 150, 100, null);	
+	     }
+		
 		ImageIcon icon1 = new ImageIcon("Resources/Energybar.jpeg");
         Image image1 = icon1.getImage();
         g.drawImage(image1, 6, 200, 48, 52, null);
@@ -70,7 +88,16 @@ public class GUI extends JPanel {
         
         
 
-		// bars 
+		// ComputerTimer
+        g.setColor(Color.black);
+        if(timeLeft == 0) {
+            g.drawString("YOU CAN WORK WITH ONE OF THE PARENTS!", 19, 760);//drawString(str, int x, int y)
+        }
+        
+        else {
+        	g.drawString("Oops, You can work in : " + String.valueOf(timeLeft) + " seconds", 19, 760);
+        }
+        
         // Energy 
         g.setColor(Color.black);
         g.drawString("ENERGY", 6, 190);//drawString(str, int x, int y)
@@ -93,10 +120,7 @@ public class GUI extends JPanel {
         g.fillRect(60, 440, length2_ok, BAR_WIDTH);
         
         
-        //DrawingPLayer
-        
-        
-			
+        //DrawingPLayer	
         int playerLife = p.getLifePoints();
 		
 		g.setColor(Color.black);
@@ -111,20 +135,75 @@ public class GUI extends JPanel {
 		g.setColor(Color.red);
 		g.fillRect(20, 665, 2*playerLife, 30);
 		
-		String currentWeapon = p.getCurrentWeapon();
-		if (currentWeapon == "box") {
-			g.fillOval(7, 820, 8, 8);
+		if(p instanceof Parent) {
+			String currentWeapon = ((Parent) p).getCurrentWeapon();
+			if (currentWeapon == "punch") {
+				g.fillOval(7, 820, 8, 8);
+			}
+			else if(currentWeapon == "shovel"){
+				g.fillOval(100, 820, 8, 8);
+			}
+			else {
+				g.fillOval(180, 820, 8, 8);
 		}
-		else if(currentWeapon == "shovel"){
-			g.fillOval(100, 820, 8, 8);
 		}
-		else {
-			g.fillOval(180, 820, 8, 8);
-		}
-		
 		g.setColor(Color.BLACK);
 		int food = p.getFamilyFood();
 		g.drawString("x" + String.valueOf(food), 75, 950);
+		
+		//Inventory
+		
+		g.setColor(Color.black);
+		g.drawString("INVENTORY:", 20, 500);
+			
+		g.setColor(Color.darkGray);
+		for (int i=0; i < 4; i++) {
+			g.fillRect(20 + i*50, 520, 48, 48);
+			}
+			
+	    
+		this.inventory = p.getinventory();
+		
+	    for (Object object: inventory) {
+			int position = inventory.indexOf(object);
+			
+			if (object instanceof Apple) {
+				ImageIcon icon = new ImageIcon("Resources/pomme2.png");
+	            Image image = icon.getImage();
+	            g.drawImage(image, 20 + position*50, 520, 48, 48, null);
+				}
+			
+			if(object instanceof EnergyCoin) {
+				ImageIcon icon = new ImageIcon("Resources/energycoin2.png");
+				Image image = icon.getImage();
+				g.drawImage(image, 20 + position *50, 520, 48, 48, null);
+				
+			}
+			
+			if (object instanceof Trash) {
+				ImageIcon icon = new ImageIcon("Resources/Trash.jpg");
+	            Image image = icon.getImage();
+	            g.drawImage(image, 20 + position*50, 520, 48, 48, null);
+	            int X = ((Trash) object).getLightingCoordinateX();
+	            int Y = ((Trash) object).getLightingCoordinateY();
+	            g.drawString("Put it on (" + String.valueOf(X) + "," + String.valueOf(Y) +")" + " :D", 20, 600);
+				}
+			
+			if(object instanceof Diaper) {
+				ImageIcon icon = new ImageIcon("Resources/Diaper.jpg");
+				Image image = icon.getImage();
+				g.drawImage(image, 20 + position *50, 520, 48, 48, null);
+				
+			}
+			
+			
+			}
+	    
+		if (inventory.size() == 4) {
+			g.setColor(Color.red);
+			g.drawString("Inventory is FULL", 110, 500);
+		}
+		
 			
 			
 			
@@ -138,38 +217,6 @@ public class GUI extends JPanel {
         g.drawString("FamilyMoney : ", 20, 740);
         g.drawString(String.valueOf(FamilyMoney), 100, 740);
         
-		//INVENTORY
-		g.setColor(Color.black);
-		g.drawString("INVENTORY:", 20, 500);
-			
-		g.setColor(Color.darkGray);
-		for (int i=0; i < 4; i++) {
-			g.fillRect(20 + i*50, 520, 48, 48);
-			}
-			
-	    
-		
-	    for (Object object: inventory) {
-			int position = inventory.indexOf(object);
-			
-			if (object instanceof Apple) {
-				icon = new ImageIcon("Resources/pomme2.png");
-	            image = icon.getImage();
-	            g.drawImage(image, 20 + position*50, 520, 48, 48, null);
-				}
-			
-			if(object instanceof EnergyCoin) {
-				icon = new ImageIcon("Resources/energycoin2.png");
-				image = icon.getImage();
-				g.drawImage(image, 20 + position *50, 520, 48, 48, null);
-				
-			}
-			}
-	    
-		if (inventory.size() == 4) {
-			g.setColor(Color.red);
-			g.drawString("Inventory is FULL", 110, 500);
-		}
 		
         }
 	
@@ -183,5 +230,11 @@ public class GUI extends JPanel {
     public void setPlayer(Player p) {
 		this.p = p;
 	}
+    
+    public void setComputerTimer(int waitcount, int difficulity) {
+    	timeLeft = difficulity - waitcount;
+    	
+    }
+
 
 }

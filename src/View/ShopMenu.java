@@ -18,6 +18,7 @@ public class ShopMenu extends JFrame{
 	private ShopMap shopMap = new ShopMap();
 	private JButton Button;
 	private JButton Button1;
+	private JButton Button2;
 	private Mouse mouse;
  
 
@@ -25,10 +26,9 @@ public class ShopMenu extends JFrame{
 		super("Shop");
 		mouse = new Mouse(g, this);
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        this.setBounds(500, 300 , 550, 500);
+        this.setBounds(500, 300 , 850, 500);
         this.getContentPane().setBackground(Color.gray);
         groupPanel.add(shopMap, BorderLayout.LINE_START);
-        
 		
 		Button = new JButton("Get Shovel for 50");
         Button.setBounds(0, 400, 260, 50);
@@ -37,57 +37,35 @@ public class ShopMenu extends JFrame{
 		Button1 = new JButton("Get knife for 150");
         Button1.setBounds(260, 400, 280, 50);
 		add(Button1);
+		
+		Button2 = new JButton("Get diaper for 30");
+        Button2.setBounds(530, 400, 300, 50);
+		add(Button2);
 	
 		
 		Button.addMouseListener(mouse);
 		Button1.addMouseListener(mouse);
+		Button2.addMouseListener(mouse);
         this.getContentPane().add(this.groupPanel);
         this.setVisible(true);
         
         
     	}
 
-		public void update() {
-	        this.shopMap.redraw();
-}
-		
 		public String getButtonClicked(Object o) {
 			String s = ""; 
 			if(o == this.Button) {
 				s = "button";
 			}
-			else {
+			else if(o == this.Button1) {
 				s = "button1";
+			}
+			else {
+				s = "button2";
 			}
 			
 			return s;
 		}
-	public class ShopMap extends JPanel {
-		
-		public ShopMap() {
-	    	this.setFocusable(true);
-	        this.requestFocusInWindow();
-	        this.setPreferredSize(new Dimension(540,450));
-	    }
-		 public void paint(Graphics g) {	
-	ImageIcon icon = null;
-    Image image = null;
-    
-    icon = new ImageIcon("Resources/Shovel.jpg");
-   	image = icon.getImage();
-   	g.drawImage(image, 0, 0, 260, 400 , null);
-   	
-   	icon = new ImageIcon("Resources/Knife.jpg");
-   	image = icon.getImage();
-   	g.drawImage(image, 260, 0, 280, 400, null);
-	}
-
+	
 		 
-		 
-	public void redraw() {
-	       this.repaint(); 
-	}
-	 
-    }
-
 }

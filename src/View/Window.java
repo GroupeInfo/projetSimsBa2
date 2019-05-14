@@ -65,20 +65,21 @@ public class Window extends JFrame {
     }
 
 	public int getHouseSize() {
-		return map.HOUSE_SIZE;
+		return map.getHOUSE_SIZE();
 	}
 	
 	public int getOutsideSizeX() {
-		return map.OUTSIDE_SIZEX;
+		return map.getOUTSIDE_SIZEX();
 	}
 	
-	
-	public void setGuiAttributes(ArrayList<Attachable> inventory) {
-		GUI.setGUIAttributes(inventory);
-	}
 	
 	public void setPlayer(Player p) {
 		GUI.setPlayer(p);
+	}
+
+	public void setComputerTimer(int waitCount, int difficulity){
+		GUI.setComputerTimer(waitCount, difficulity);
+		
 	}
 
 }

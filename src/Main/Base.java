@@ -3,14 +3,20 @@ import java.awt.event.ActionEvent;
 
 
 import java.awt.event.ActionListener;
+import java.io.File;
+
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+
 import Controller.Mouse;
 import Controller.Keyboard;
 import Model.Game;
+import Model.Sounds;
 import View.Map;
 import View.Window;
 import Main.PlayWindow;
 
-public class Base implements ActionListener {
+public class Base implements ActionListener, Sounds {
 
  
 	public void actionPerformed(ActionEvent e) {
@@ -24,9 +30,9 @@ public class Base implements ActionListener {
 			Game.setDifficulity(Integer.valueOf(Difficulity));
 			Map.setMapSize(Integer.valueOf(HOUSE_SIZE));
 			Window window = new Window();
+			playSound("Resources/Sounds/startgame.wav");
 	        Game game = new Game(window);
 		
-			 //prendre ce qui a été écrit dans l'une des case de PlayWindow
 			
 			Keyboard keyboard = new Keyboard(game);
 		    window.setKeyListener(keyboard);
@@ -42,6 +48,20 @@ public class Base implements ActionListener {
 				}
 
 		}
+
+	public  void playSound(String file) {
+		File voice = new File(file);
+		
+		try {
+			Clip clip = AudioSystem.getClip();
+			clip.open(AudioSystem.getAudioInputStream(voice));
+			clip.start();
+		}
+		
+		catch(Exception e) {
+			
+		}
+	}
 }
         
       

@@ -1,17 +1,22 @@
 package Model;
 
+import java.io.File;
+
 import java.util.Timer;
 import java.util.TimerTask;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 
-public class Kitchen extends GameObject implements Activable, OversizedObject, Changeable {
+public class Kitchen extends GameObject implements Activable, OversizedObject, Changeable, Sounds {
 	private int energy = 10;
 	private int Satisfaction = 100;
 	private Player p;
 	private Game g;
 	private boolean used;
-	private static int count = 0;
-	private static int count1 = 0;
-	private static int waitCount = 0;
+	private int count = 0;
+	private int count1 = 0;
+	private int waitCount = 0;
+	
 	public Kitchen(int X, int Y,  int widthIntRatio, int heightIntRatio, Game g) {
 		super(X,Y,6, widthIntRatio, heightIntRatio);
 		this.g  = g;
@@ -19,12 +24,14 @@ public class Kitchen extends GameObject implements Activable, OversizedObject, C
 	}
 	
 	 public void activate() {
-		 p = g.active_player;
-		 
+		 p = g.getActive_player();
+		 if(p instanceof Parent && p.getFamilyFood() >= 300) {
+		 p.decreaseFamilyFood();
 		 Timer timer = new Timer();
 		 TimerTask task = new TimerTask() {
 				public void run() {
 				if(count1 >= 1) {
+				playSound("Resources/Sounds/oven.wav");
 				timer.cancel();
 				StartAndEnd();}
 				g.addPlayerToSleepingObjects(p);
@@ -36,10 +43,10 @@ public class Kitchen extends GameObject implements Activable, OversizedObject, C
 				
 			      };
 			timer.schedule(task,0,1000);  
-			
-		}
+		 }
+	}
 	 
-	 public int getShowerEnergy() {
+	 public int getKitchenEnergy() {
 		 return(energy);
 	 }
 	 
@@ -50,8 +57,7 @@ public class Kitchen extends GameObject implements Activable, OversizedObject, C
 			 public void run() {
 				 if(count == 4) {
 					 p.setAwakeState();
-					 p.addEnergy(getShowerEnergy());
-					 p.addSatisfaction(getSatisfaction());
+					 g.allPlayersEat(energy,Satisfaction);
 					 used = false;
 					 
 					 g.removePlayerFromSleepingObjects(p);
@@ -93,9 +99,6 @@ public class Kitchen extends GameObject implements Activable, OversizedObject, C
 		 return Satisfaction;
 	 }
 	 
-	 public void addSatisfactionToPlayer() {
-		p.addEnergy(Satisfaction);
-	 }
 	 
 	 public boolean isInObjectSpace(int x, int y) {
 	    	boolean z = false;
@@ -119,6 +122,20 @@ public class Kitchen extends GameObject implements Activable, OversizedObject, C
 	@Override
 	public boolean isUsed() {
 		return used;
+	}
+
+	public  void playSound(String file) {
+		File voice = new File(file);
+		
+		try {
+			Clip clip = AudioSystem.getClip();
+			clip.open(AudioSystem.getAudioInputStream(voice));
+			clip.start();
+		}
+		
+		catch(Exception e) {
+			
+		}
 	}
 }
 

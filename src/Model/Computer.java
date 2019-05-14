@@ -10,6 +10,7 @@ public class Computer extends GameObject implements Activable, OversizedObject {
 	private static int count = 0;
 	private static int count1 = 0;
 	private static int waitCount = 0;
+	private int difficulity = 180;
 	public Computer(int X, int Y, int widthIntRatio, int heightIntRatio, Game g) {
 		super(X,Y,6, widthIntRatio, heightIntRatio);
 		
@@ -18,8 +19,8 @@ public class Computer extends GameObject implements Activable, OversizedObject {
 	}
 	
 	 public void activate() {
-		 p = g.active_player;
-		 
+		 p = g.getActive_player();
+		 if(p instanceof Parent) {
 		 if(waitCount ==0) {
 		 Timer timer = new Timer();
 		 TimerTask task = new TimerTask() {
@@ -35,8 +36,8 @@ public class Computer extends GameObject implements Activable, OversizedObject {
 		 
 			      };
 			timer.schedule(task,0,1000);  
-		 }
-			
+		 		}
+		 	}
 		}
 	 
 	 public int getComputerMoney() {
@@ -71,7 +72,8 @@ public class Computer extends GameObject implements Activable, OversizedObject {
 		 TimerTask waitTimerTask = new TimerTask() {
 			 
 			 public void run() {
-				 if(waitCount == 180) {
+				 g.setComputerTimer(waitCount, difficulity);
+				 if(waitCount == difficulity) {
 					 waitTimer.cancel();
 					 waitCount = 0;
 				 }
@@ -87,10 +89,7 @@ public class Computer extends GameObject implements Activable, OversizedObject {
 	 public boolean isObstacle(){
 		 return(true);
 	 }
-	 
-	 public int getExtraMoney() {
-		 return(money);
-	 }
+	
 	 
 	 public void addMoneyToPlayer() {
 		p.addMoney(money);

@@ -17,45 +17,27 @@ public class Mouse implements MouseListener {
         this.shop = shop;
     }
     
-    
-    
-	public void mapEvent(int x, int y) {
-		synchronized(game) {
-			game.sendPlayer(x, y);
-		}
-	}
 
 	public void mouseClicked(MouseEvent e) {
 		Object s = e.getSource();
-		if(shop.getButtonClicked(s) == "button") {
-			System.out.println(shop.getButtonClicked(s)); 
-			game.removeMoneyFromPlayer(50);
-		}
-		else if(shop.getButtonClicked(s) == "button1") {
-			game.removeMoneyFromPlayer(150);
-		}
-		
+		String s1 = shop.getButtonClicked(s);
+		game.removeMoneyFromPlayer(s1);
 	}
 
 	public void mouseEntered(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
 	}
 
-
 	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
+		// TODO Auto-generated method stub	
 	}
 
 	public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
 	}
 
 
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
 	}
 }

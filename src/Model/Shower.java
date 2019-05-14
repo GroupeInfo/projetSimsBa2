@@ -1,16 +1,20 @@
 package Model;
+import java.io.File;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class Shower extends GameObject implements Activable, OversizedObject, Changeable{
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+
+public class Shower extends GameObject implements Activable, OversizedObject, Changeable, Sounds{
 	private int energy = 10;
-	private int hygene = 100;
+	private int hygiene = 100;
 	private Player p;
 	private Game g;
 	private boolean used;
-	private static int count = 0;
-	private static int count1 = 0;
-	private static int waitCount = 0;
+	private int count = 0;
+	private int count1 = 0;
+	private int waitCount = 0;
 	public Shower(int X, int Y,  int widthIntRatio, int heightIntRatio, Game g) {
 		super(X,Y,6, widthIntRatio, heightIntRatio);
 		this.g  = g;
@@ -18,19 +22,20 @@ public class Shower extends GameObject implements Activable, OversizedObject, Ch
 	}
 	
 	 public void activate() {
-		 p = g.active_player;
+		 p = g.getActive_player();
 		 
 		 Timer timer = new Timer();
 		 TimerTask task = new TimerTask() {
 				public void run() {
-				if(count1 >= 1) {
-				timer.cancel();
-				StartAndEnd();}
-				g.addPlayerToSleepingObjects(p);
-				p.setSleepingState();
-				count1++;
-				used = true;
-			}
+					if(count1 >= 1) {
+					timer.cancel();
+					playSound("Resources/Sounds/shower.wav");
+					StartAndEnd();}
+					g.addPlayerToSleepingObjects(p);
+					p.setSleepingState();
+					count1++;
+					used = true;
+				}
 				
 			      };
 			timer.schedule(task,0,1000);  
@@ -48,8 +53,8 @@ public class Shower extends GameObject implements Activable, OversizedObject, Ch
 			 public void run() {
 				 if(count == 3) {
 					 p.setAwakeState();
-					 p.addEnergy(getShowerEnergy());
-					 p.addHygene(getShowerHygene());
+					 p.addEnergy(energy);
+					 p.addHygiene(hygiene);
 					 used = false;
 					 
 					 g.removePlayerFromSleepingObjects(p);
@@ -86,16 +91,9 @@ public class Shower extends GameObject implements Activable, OversizedObject, Ch
 		 return(true);
 	 }
 	 
-	 public int getExtraEnergy() {
-		 return(energy);
-	 }
 	 
-	 public int getShowerHygene() {
-		 return(hygene);
-	 }
-	 
-	 public void addEnergyToPlayer() {
-		p.addEnergy(energy);
+	 public int getShowerHygiene() {
+		 return(hygiene);
 	 }
 	 
 	 public boolean isInObjectSpace(int x, int y) {
@@ -120,5 +118,19 @@ public class Shower extends GameObject implements Activable, OversizedObject, Ch
 	@Override
 	public boolean isUsed() {
 		return used;
+	}
+	
+	public  void playSound(String file) {
+		File voice = new File(file);
+		
+		try {
+			Clip clip = AudioSystem.getClip();
+			clip.open(AudioSystem.getAudioInputStream(voice));
+			clip.start();
+		}
+		
+		catch(Exception e) {
+			
+		}
 	}
 }

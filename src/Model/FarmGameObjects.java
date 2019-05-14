@@ -1,11 +1,11 @@
 package Model;
 
 public abstract class FarmGameObjects {
-    protected int posX;
-    protected int posY;
-    protected int color;
-    protected int width;
-    protected int height;
+    private int posX;
+    private int posY;
+    private int color;
+    private int width;
+    private int height;
 
     public FarmGameObjects(int X, int Y, int color, int width, int height) {
         posX = X;

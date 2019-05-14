@@ -5,9 +5,10 @@ import Model.BlockUnbreakable;
 
 import Model.Changeable;
 import Model.Kitchen;
+import Model.MilkContainer;
+import Model.Parent;
 import Model.Shop;
 import Model.EnergyCoin;
-import Model.FarmTeleportation;
 import Model.Apple;
 import Model.Bed;
 import Model.Game;
@@ -18,37 +19,36 @@ import Model.Player;
 import Model.Chicken;
 import Model.Computer;
 import Model.Shower;
+import Model.Trash;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
-import Controller.Mouse;
 import Model.FarmGameObjects;
 
 public class Map extends JPanel {
     private ArrayList<GameObject> objects = null;
     private ArrayList<FarmGameObjects> farmObjects = null;
     private ArrayList<Player> players = null;
-    public  static int HOUSE_SIZE ;
-    public final int OUTSIDE_SIZEX = 7;
-    public static int BLOC_SIZE = 40;
-    public static int BLOC_SIZE1 = BLOC_SIZE -2;
+    private static int HOUSE_SIZE ;
+    private final int OUTSIDE_SIZEX = 7; 
+    private static int BLOC_SIZE = 40;
+    private static int BLOC_SIZE1 = BLOC_SIZE -2;
 
     public Map() {
     	this.setFocusable(true);
         this.requestFocusInWindow();
-        this.setPreferredSize(new Dimension((HOUSE_SIZE+ OUTSIDE_SIZEX) *BLOC_SIZE , HOUSE_SIZE*BLOC_SIZE));
+        this.setPreferredSize(new Dimension((getHOUSE_SIZE()+ getOUTSIDE_SIZEX()) *BLOC_SIZE , getHOUSE_SIZE()*BLOC_SIZE));
     
     }
     
     public static void setMapSize(int house_size) {
-    	HOUSE_SIZE = house_size;
+    	setHOUSE_SIZE(house_size);
     }
     
     
@@ -58,11 +58,11 @@ public class Map extends JPanel {
     	ImageIcon iconFirst = null;
         Image imageFirst = null;
 
-        if(Game.mapChanger == false) {
+        if(Game.getMapChanger() == false) {
         
         
-    	for (int i = 0; i < HOUSE_SIZE; i++) { 
-            for (int j = 0; j < HOUSE_SIZE; j++) {
+    	for (int i = 0; i < getHOUSE_SIZE(); i++) { 
+            for (int j = 0; j < getHOUSE_SIZE(); j++) {
                 int x = i;
                 int y = j;
                 iconFirst = new ImageIcon("Resources/floor1.jpeg");
@@ -70,8 +70,8 @@ public class Map extends JPanel {
             	g.drawImage(imageFirst, x*BLOC_SIZE, y*BLOC_SIZE, BLOC_SIZE, BLOC_SIZE, null);
             }
         }
-    	for (int i  = HOUSE_SIZE; i < HOUSE_SIZE + OUTSIDE_SIZEX; i++) { 
-            for (int j = 0; j < HOUSE_SIZE; j++) {
+    	for (int i  = getHOUSE_SIZE(); i < getHOUSE_SIZE() + getOUTSIDE_SIZEX(); i++) { 
+            for (int j = 0; j < getHOUSE_SIZE(); j++) {
                 int x = i;
                 int y = j;
                 iconFirst = new ImageIcon("Resources/Green.jpg");
@@ -122,6 +122,12 @@ public class Map extends JPanel {
         	g.drawImage(image, x*BLOC_SIZE, y*BLOC_SIZE, w*BLOC_SIZE1, h*BLOC_SIZE1, null);
         }
         
+
+        if (object instanceof Trash) {
+        	icon = new ImageIcon("Resources/Trash.jpg");
+        	image = icon.getImage();
+        	g.drawImage(image, x*BLOC_SIZE, y*BLOC_SIZE, w*BLOC_SIZE1, h*BLOC_SIZE1, null);
+        }
         
         if (object instanceof EnergyCoin) {
         	icon = new ImageIcon("Resources/energycoin1.jpeg");
@@ -141,6 +147,13 @@ public class Map extends JPanel {
             image = icon.getImage();
             g.drawImage(image, x*BLOC_SIZE, y*BLOC_SIZE, w*BLOC_SIZE1,  h*BLOC_SIZE , null);
         }
+        
+        if (object instanceof MilkContainer) {
+      	  	icon = new ImageIcon("Resources/MilkContainer.jpg");
+            image = icon.getImage();
+            g.drawImage(image, x*BLOC_SIZE, y*BLOC_SIZE, w*BLOC_SIZE1,  h*BLOC_SIZE , null);
+        }
+        
         
         if(object instanceof Changeable) {
         	if(((Changeable) object).isUsed()){
@@ -202,10 +215,67 @@ public class Map extends JPanel {
         ImageIcon icon = null;
         Image image = null;
         
+        icon = new ImageIcon("Resources/foutain.jpeg");
+        image = icon.getImage();
+        g.drawImage(image, 26*BLOC_SIZE, 17*BLOC_SIZE, 5*BLOC_SIZE1,  5*BLOC_SIZE1, null);
+        
+        icon = new ImageIcon("Resources/cabinet.jpeg");
+        image = icon.getImage();
+        g.drawImage(image, 7*BLOC_SIZE, 6*BLOC_SIZE, 1*BLOC_SIZE1,  3*BLOC_SIZE1, null);
+        
+        icon = new ImageIcon("Resources/cabinet.jpeg");
+        image = icon.getImage();
+        g.drawImage(image, 9*BLOC_SIZE, 6*BLOC_SIZE, 1*BLOC_SIZE1,  3*BLOC_SIZE1, null);
+        
+        icon = new ImageIcon("Resources/cabinet.jpeg");
+        image = icon.getImage();
+        g.drawImage(image, 15*BLOC_SIZE, 6*BLOC_SIZE, 1*BLOC_SIZE1,  3*BLOC_SIZE1, null);
+        
+        icon = new ImageIcon("Resources/cabinet.jpeg");
+        image = icon.getImage();
+        g.drawImage(image, 1*BLOC_SIZE, 19*BLOC_SIZE, 1*BLOC_SIZE1,  4*BLOC_SIZE1, null);
+        
         icon = new ImageIcon("Resources/tv12.jpeg");
         image = icon.getImage();
         g.drawImage(image, 19*BLOC_SIZE, 1*BLOC_SIZE, 3*BLOC_SIZE1,  2*BLOC_SIZE1, null);
+        
+        icon = new ImageIcon("Resources/tree.jpeg");
+        image = icon.getImage();
+        g.drawImage(image, 25*BLOC_SIZE, 21*BLOC_SIZE, 2*BLOC_SIZE1,  2*BLOC_SIZE1, null);
+        
+        icon = new ImageIcon("Resources/tree.jpeg");
+        image = icon.getImage();
+        g.drawImage(image, 30*BLOC_SIZE, 21*BLOC_SIZE, 2*BLOC_SIZE1,  2*BLOC_SIZE1, null);
+        
+        icon = new ImageIcon("Resources/tree.jpeg");
+        image = icon.getImage();
+        g.drawImage(image, 25*BLOC_SIZE, 15*BLOC_SIZE, 2*BLOC_SIZE1,  2*BLOC_SIZE1, null);
+
+        
+        icon = new ImageIcon("Resources/tree.jpeg");
+        image = icon.getImage();
+        g.drawImage(image, 30*BLOC_SIZE, 15*BLOC_SIZE, 2*BLOC_SIZE1,  2*BLOC_SIZE1, null);
+        
+        icon = new ImageIcon("Resources/welcome.jpeg");
+        image = icon.getImage();
+        g.drawImage(image, 25*BLOC_SIZE, 11*BLOC_SIZE, 2*BLOC_SIZE1,  2*BLOC_SIZE1, null);
+        
+        icon = new ImageIcon("Resources/path.jpeg");
+        image = icon.getImage();
+        g.drawImage(image, 27*BLOC_SIZE, 12*BLOC_SIZE, 2*BLOC_SIZE1,  5*BLOC_SIZE1, null);
        
+      
+        icon = new ImageIcon("Resources/roundtable.jpeg");
+        image = icon.getImage();
+        g.drawImage(image, 16*BLOC_SIZE, 17*BLOC_SIZE, 3*BLOC_SIZE1,  3*BLOC_SIZE1, null);
+        
+        icon = new ImageIcon("Resources/fridge.jpeg");
+        image = icon.getImage();
+        g.drawImage(image, 16*BLOC_SIZE, 21*BLOC_SIZE, 3*BLOC_SIZE1,  3*BLOC_SIZE1, null);
+        
+        icon = new ImageIcon("Resources/washbasin.jpg");
+        image = icon.getImage();
+        g.drawImage(image, 20*BLOC_SIZE, 16*BLOC_SIZE, 4*BLOC_SIZE1,  4*BLOC_SIZE1, null);
         
         icon = new ImageIcon("Resources/hanafie2.jpeg");
         image = icon.getImage();
@@ -243,8 +313,8 @@ public class Map extends JPanel {
     	g.setColor(Color.lightGray);
 		g.fillRect(0, 0, 1300, 1020);    	
     	
-		for (int i = 0; i < HOUSE_SIZE; i++) { 
-            for (int j = 0; j < HOUSE_SIZE; j++) {
+		for (int i = 0; i < getHOUSE_SIZE(); i++) { 
+            for (int j = 0; j < getHOUSE_SIZE(); j++) {
                 int x = i;
                 int y = j;
                 iconFirst = new ImageIcon("Resources/Green.jpg");
@@ -315,131 +385,130 @@ public class Map extends JPanel {
         g.drawImage(imageFirst1, 23*BLOC_SIZE, 23*BLOC_SIZE , BLOC_SIZE1, BLOC_SIZE1 , null);
         
         
-        for (Player player : this.players) { 
-           String gender = player.getGender();
-           if(player.isInFarmState() == Game.mapChanger){
-	       int direction = player.getDirection();
+        for (Player player : this.players) {
+        	
 	       boolean z = player.getSleepingState();
+	       boolean green = false;
 	       if(!z) {
 	    	   int x = player.getPosX();
 		       int y = player.getPosY();
-		       int deltaX = 0;
-		       int deltaY = 0;
-		       switch (direction) {
+		       String gender = player.getGender();
+	           
+		       if(x>24) {
+		    	   green = true;
+		       }
 		       
-		       case Directable.EAST:
-		    	   if(!(Game.mapChanger)) {
-		    	   if(gender == "Male") {
-			    	   drawPlayer(x, y, "adam1", G);
-			    	   deltaX = +BLOC_SIZE1/2;
-		    	   }
-		    	   else {
-		    		   drawPlayer(x, y, "eve1", G);
-			    	   deltaX = +BLOC_SIZE1/2;
-		    	   		}
-		    	   }
-		    	   else {
-		    		   if(gender == "Male") {
-		    			   drawPlayer(x, y, "adam1F", G);
-				    	   deltaX = +BLOC_SIZE1/2;
-		    		   		}
-			    	   else {
-			    		   drawPlayer(x, y, "eve1F", G);
-				    	   deltaX = +BLOC_SIZE1/2;
-		    		   		}
-		    	   }
-		    	   break;
-		       case Directable.NORTH:
-		    	   
-		    	   if(!(Game.mapChanger)) {
-		    	   if(gender == "Male") {
-		    		   drawPlayer(x, y, "adam2", G);
-			           deltaY = -BLOC_SIZE1/2;
-		    	   }
-		    	   else {
-		    		   drawPlayer(x, y, "eve2", G);
-			           deltaY = -BLOC_SIZE1/2;
-		    	   }
-		    	   }
-		    	   else {
-		    		   if(gender == "Male") {
-			    		   drawPlayer(x, y, "adam2F", G);
-				           deltaY = -BLOC_SIZE1/2;
-			    	   }
-			    	   else {
-			    		   drawPlayer(x, y, "eve2F", G);
-				           deltaY = -BLOC_SIZE1/2;
-			    	   }
-		    		   
-		    	   }
-		           break;
-		           
-		       case Directable.WEST:
-		    	   if(!(Game.mapChanger)) {
-		    	   if(gender == "Male") {
-		    		   drawPlayer(x, y, "adam3", G);
-			           deltaX = -BLOC_SIZE1/2;
-		    	   }
-		           else {
-		        	   drawPlayer(x, y, "eve3", G);
-			           deltaX = -BLOC_SIZE1/2; 
-		           }
-		    	   }
-		    	   else {
-		    		   if(gender == "Male") {
-			    		   drawPlayer(x, y, "adam3F", G);
-				           deltaX = -BLOC_SIZE1/2;
-			    	   }
-			           else {
-			        	   drawPlayer(x, y, "eve3F", G);
-				           deltaX = -BLOC_SIZE1/2; 
-			           }
-		    		   
-		    	   }
-		    	   break;
-		    	   
-		       case Directable.SOUTH:
-		        	if(!(Game.mapChanger)) {
-		        	if(gender == "Male") {
-		        		drawPlayer(x, y, "adam4", G);
-			            deltaY = BLOC_SIZE1/2;
-		        	}
-		        	else {
-		        		drawPlayer(x, y, "eve4", G);
-			            deltaY = BLOC_SIZE1/2;
-		        	}
-		        	}
-		        	else {
-				    if(gender == "Male") {
-				        drawPlayer(x, y, "adam4F", G);
-					    deltaY = BLOC_SIZE1/2;
-				      }
-				     else{
-				        drawPlayer(x, y, "eve4F", G);
-					    deltaY = BLOC_SIZE1/2;
-				       }
-		        	}
-
-	       				}  
-		       int xCenter = x * BLOC_SIZE + BLOC_SIZE1/2;
-		       int yCenter = y * BLOC_SIZE + BLOC_SIZE1/2;
-		       g.drawLine(xCenter, yCenter, xCenter + deltaX, yCenter + deltaY); 
- 
+	           String s = "";
+	           if(player instanceof Parent) {
+	        	   s = "Parent";
+	           }
+	           else {
+	        	   s = "Baby";
+	           }
+	           if(player.isInFarmState() == Game.getMapChanger()){
+		       int direction = player.getDirection();
+		       
+		       DrawEverything(x, y, gender, direction, g, s, green);
 	       		}
            	}
         }
+        
+        
     }
-         
+       
+    public void DrawEverything(int x,int y,String gender, int direction, Graphics g, String s, boolean green){
+    	int deltaX = 0;
+	    int deltaY = 0;
+    	switch (direction) {
+	       case Directable.EAST:
+	    	   drawPlayer(gender, x, y, g, s, 1, green);
+	    	   deltaX = BLOC_SIZE1/2;
+	    	   break;
+	       case Directable.NORTH:
+	    	   drawPlayer(gender, x, y, g, s, 2, green);
+		       deltaY = -BLOC_SIZE1/2;
+	    	   break;
+	       case Directable.WEST:
+	    	   drawPlayer(gender, x, y, g, s, 3, green);
+	    	   deltaX = -BLOC_SIZE1/2;
+	    	   break;
+	    	   
+	       case Directable.SOUTH:
+	    	   drawPlayer(gender, x, y, g, s, 4, green);
+		      deltaY = BLOC_SIZE1/2;
+		      break;
+    	}
+    	
+    	int xCenter = x * BLOC_SIZE + BLOC_SIZE1/2;
+	    int yCenter = y * BLOC_SIZE + BLOC_SIZE1/2;
+	    g.drawLine(xCenter, yCenter, xCenter + deltaX, yCenter + deltaY); 
+    	
+    }
     
-    public void drawPlayer(int x, int y, String s, Graphics G) {
+    public void drawImage(int x, int y, String s, Graphics g, String type) {
     	ImageIcon icon = null;
         Image image = null;
         
-       icon = new ImageIcon("Resources/" +s+ ".jpeg");
+       icon = new ImageIcon("Resources/" +s+ type);
 	   image = icon.getImage();
-	    G.drawImage(image, x*BLOC_SIZE, y*BLOC_SIZE, BLOC_SIZE1, BLOC_SIZE1, null);
+	   g.drawImage(image, x*BLOC_SIZE, y*BLOC_SIZE, BLOC_SIZE1, BLOC_SIZE1, null);
  	  
         
+    }
+    
+    public void drawPlayer(String gender, int x, int y, Graphics g, String s, int pictureNumber, boolean green) { 
+	 	   if(s == "Parent") {
+	 		   drawParent(gender, x, y, g, pictureNumber, green);
+	 	   }
+	 	   else {
+	 		   drawBaby(gender, x, y, g, pictureNumber, green);
+	 	   }
+	 	   
+    }
+    
+    
+    public void drawParent(String gender, int x, int y, Graphics g, int pictureNumber, boolean green) {
+    	String s = ".jpeg";
+    	if(!(Game.getMapChanger()) && !green) {
+ 	 	   if(gender == "Male") {
+ 	 		  drawImage(x, y, "adam"+ String.valueOf(pictureNumber), g, s);   
+ 	 	   }
+ 	 	   else {
+ 	 		   drawImage(x, y, "eve"+ String.valueOf(pictureNumber), g, s);     
+ 	 	   }
+ 	 	   
+ 	 	   }
+ 	 	   else {
+ 	 		   if(gender == "Male") {
+ 	 			   drawImage(x, y, "adam" + String.valueOf(pictureNumber) +  "F", g, s);
+ 		    	   }
+ 	 		   else {
+ 	 			   drawImage(x, y, "eve" + String.valueOf(pictureNumber) +  "F", g, s);
+ 			           
+ 		    	   }
+ 	 	   }
+    }
+    
+    public void drawBaby(String gender, int x, int y, Graphics g, int pictureNumber, boolean green) {
+    	String s = ".jpg";
+    	if(!(Game.getMapChanger()) && !green) {
+  	 	   if(gender == "Male") {
+  	 		  drawImage(x, y, "Baby"+ String.valueOf(pictureNumber), g, s);   
+  	 	   }
+  	 	   else {
+  	 		   drawImage(x, y, "Baby"+ String.valueOf(pictureNumber), g , s);     
+  	 	   }
+  	 	   
+  	 	   }
+  	 	   else {
+  	 		   if(gender == "Male") {
+  	 			   drawImage(x, y, "Baby"+ String.valueOf(pictureNumber) +  "F", g, s);
+  		    	   }
+  	 		   else {
+  	 			   drawImage(x, y, "Baby" + String.valueOf(pictureNumber) +  "F", g, s);
+  			           
+  		    	   }
+  	 	   }
     }
     
     public void setFarmObjects(ArrayList<FarmGameObjects> farmObjects) {
@@ -457,6 +526,19 @@ public class Map extends JPanel {
     public void redraw() {
         this.repaint(); 
     }
+
+	public static int getHOUSE_SIZE() {
+		return HOUSE_SIZE;
+	}
+
+	public static void setHOUSE_SIZE(int hOUSE_SIZE) {
+		HOUSE_SIZE = hOUSE_SIZE;
+	}
+
+	public int getOUTSIDE_SIZEX() {
+		return OUTSIDE_SIZEX;
+	}
+    
 
 	
 }

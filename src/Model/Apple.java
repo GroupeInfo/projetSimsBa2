@@ -1,18 +1,16 @@
 package Model;
 
-import java.util.ArrayList;
 
-public class Apple extends GameObject implements Attachable, Activable, Deletable{
-	private ArrayList<DeletableObserver> observers = new ArrayList<DeletableObserver>();
+public class Apple extends GameObject implements Attachable, Usable{
 	private int AppleEnergy = 10;
 	private int AppleSatisfaction = 10;
 	private Player p;
-	public Apple(int X, int Y, Player player) {
+	
+	public Apple(int X, int Y) {
 		super(X,Y,6,1,1);
-		p = player;
 		
 	}
-	 public void activate() {
+	 public void use() {
 		 p.addEnergy(AppleEnergy);
 		 p.addSatisfaction(AppleSatisfaction);
 	 }
@@ -23,19 +21,12 @@ public class Apple extends GameObject implements Attachable, Activable, Deletabl
 	 public int getExtraEnergy() {
 		 return(AppleEnergy);
 	 }
+	@Override
+	public void assignPlayer(Player p) {
+		this.p = p;
+	}
 	 
-	 public void notifyDeletableObserver() {
-	        int i = 0;
-	        for (DeletableObserver o : observers) {
-	            i++;
-	            o.delete(this, null);
-	        }
-	 }
 	 
-	 public void attachDeletable(DeletableObserver poo) {
-		 observers.add(poo);
-		 
-	 }
 }
 
 

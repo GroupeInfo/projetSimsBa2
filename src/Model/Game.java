@@ -1,5 +1,6 @@
 package Model;
 import View.Restart;
+
 import View.Window;
 
 import java.awt.event.WindowEvent;
@@ -9,14 +10,11 @@ import Model.FarmGameObjects;
 import java.io.File;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.swing.ImageIcon;
-import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
 
 public class Game implements DeletableObserver, Sounds{
     private ArrayList<GameObject> objects = new ArrayList<GameObject>();
     private ArrayList<Player> players = new ArrayList<Player>();
+    private ArrayList<Parent> parents = new ArrayList<Parent>();
     private ArrayList<Attachable> inventory = new ArrayList<Attachable>();
     private ArrayList<Player> SleepingObject = new ArrayList<Player>();
     private int level = 0;
@@ -24,32 +22,30 @@ public class Game implements DeletableObserver, Sounds{
     private int[][] GraphicalArray;
     private FarmTeleportation teleport1;
     private static  int houseSize;
-    private  int outsideSize;
-    public static boolean mapChanger = false;
-    public boolean endGame = false;
-    public static Player active_player = null;
-    public static int numberOfBreakableBlocks = 40;
-    
-    
-    protected ArrayList<FarmGameObjects> farmObjects = new ArrayList<FarmGameObjects>();
+    private boolean endGame = false;
+    private static boolean mapChanger = false;
+    private Player active_player = null;    
+    private ArrayList<FarmGameObjects> farmObjects = new ArrayList<FarmGameObjects>();
     
     public Game(Window window) { 
     	
         this.window = window;
 
         // Creating one Player at position (10,10)
-        Player p = new Player(10, 10, this, "Male");
-        Player p2 = new Player(12, 12,this, "Female");
+        Parent p = new Parent(10, 10, this, "Male");
+        Parent p2 = new Parent(12, 12,this, "Female");
+        Baby b1 = new Baby(13,13,this,"Male");
         // apres 10 carreaux !!! ca ne veux pas!! dire à la coordonnées X de java...
         
-        players.add(p);
-        players.add(p2);
+        players.add(p); players.add(p2);  players.add(b1);
+        parents.add(p); parents.add(p2);
+
         
-        active_player = p;
+        setActive_player(p);
         window.setPlayer(p); //forGUI
         
         //CreatingFirstChicken
-        Chicken chicken = new Chicken(12, 12, this, players);
+        Chicken chicken = new Chicken(12, 12, this, parents);
     	chicken.attachDeletable(this);
     	
     	//GameEssentialObjects
@@ -58,7 +54,11 @@ public class Game implements DeletableObserver, Sounds{
         Shower s = new Shower(4,22,5,2,this);
         Kitchen k = new Kitchen(19,21,3,3,this);
         Shop shop = new Shop(27,2,1,1,this);
+        MilkContainer m1 = new MilkContainer(1, 10 , 0, 2,2 , this);
         Door d1 = new Door(12,9,0); Door d2 = new Door(4,9,0); Door d3 = new Door(19,9,0); Door d4 = new Door(4,15,0); Door d5 = new Door(19,15,0);
+        Trash t = new Trash(22,10,0,1,1, this);
+        
+        t.attachDeletable(this);
         
         objects.add(c);
         objects.add(b); 
@@ -66,6 +66,8 @@ public class Game implements DeletableObserver, Sounds{
         objects.add(s);
         objects.add(k);
         objects.add(shop);
+        objects.add(m1);
+        objects.add(t);
        
         
         for(int i = 0; i<5; i++) {
@@ -73,7 +75,7 @@ public class Game implements DeletableObserver, Sounds{
         createEnergyCoins();
         }
         
-        this.teleport1 = new FarmTeleportation(23,23,active_player);
+        this.teleport1 = new FarmTeleportation(23,23,getActive_player());
          
        // Map building
         
@@ -111,10 +113,11 @@ public class Game implements DeletableObserver, Sounds{
         }
         
         //AddingGraphicalObjects
-        int x[][] = {{9,4},{10,4},{11,4},{11,3},{11,2},{11,1},{13,1},{13,2},{13,3},{13,4},{14,4},{15,4},{19,1},{19,2},{20,1},
-        			{20,2},{21,1},{21,2},{18,4},{18,5},{19,4},{19,5},{20,4},{20,5},{21,4},{21,5},{10,16},{11,16},{12,16},
-        			{13,16},{14,16},{2,16},{2,17},{3,16},{3,17},{7,18},{7,19},{8,18},{8,19},{4,22},{4,23},{5,22},{5,23},
-        			{6,22},{6,23},{7,22},{7,23},{8,22},{8,23},{19,22},{19,23},{20,22},{20,23},{21,22},{21,23},{19,21},{20,21},{21,21}};
+        int x[][] = {{9,4},{10,4},{11,4},{11,3},{11,2},{11,1},{13,1},{13,2},{13,3},{13,4},{14,4},{15,4},{19,1},{19,2},{20,1},{20,2},{21,1},
+        			{21,2},{18,4},{18,5},{19,4},{19,5},{20,4},{20,5},{21,4},{21,5},{10,16},{11,16},{12,16},{13,16},{14,16},{2,16},{2,17},{3,16},
+        			{3,17},{7,18},{7,19},{8,18},{8,19},{4,22},{4,23},{5,22},{5,23},{6,22},{6,23},{7,22},{7,23},{8,22},{8,23},{19,22},{19,23},
+        			{20,22},{20,23},{21,22},{21,23},{19,21},{20,21},{21,21},{7,6},{7,7},{7,8},{9,6},{9,7},{9,8},{15,6},{15,7},{15,8},{16,17},
+        			{17,17},{18,17},{18,18},{18,19},{17,19},{16,19},{22,16},{22,17},{22,18},{22,19},{23,19},{16,21},{17,21},{18,21},{18,22},{18,23}};
         
         this.GraphicalArray = x;
         
@@ -151,7 +154,6 @@ public class Game implements DeletableObserver, Sounds{
         window.setGameObjects(objects);
         window.setPlayers(players);
         window.setFarmGameObjects(farmObjects);
-        window.setGuiAttributes(inventory);
         notifyView();
         }
     
@@ -166,7 +168,7 @@ public class Game implements DeletableObserver, Sounds{
     }
     
     public boolean SleepingStateOfPlayer() {
-    	boolean z = this.active_player.getSleepingState();
+    	boolean z = this.getActive_player().getSleepingState();
     	return z;
     	 }
     
@@ -179,7 +181,7 @@ public class Game implements DeletableObserver, Sounds{
     	int y = rand.nextInt(houseSize-1);
     	z = takenPositionHouse(x, y); 	
     	if(z == false) {
-    		EnergyCoin EC = new EnergyCoin(x,y,active_player);
+    		EnergyCoin EC = new EnergyCoin(x,y);
             this.objects.add(EC);
     	}
     }
@@ -192,12 +194,12 @@ public class Game implements DeletableObserver, Sounds{
     	int y = rand.nextInt(houseSize-1);
     	z = takenPositionHouse(x, y); 	
     	if(z == false) {
-    		Apple apple = new Apple(x,y,active_player);
+    		Apple apple = new Apple(x,y);
         	this.objects.add(apple);
     	}
     }
 }
-    public boolean takenPositionHouse(int x, int y) {
+    private boolean takenPositionHouse(int x, int y) {
     	boolean z = false;
     	ArrayList<GameObject> CurrentObjects = getGameObjects();
         
@@ -230,7 +232,7 @@ public class Game implements DeletableObserver, Sounds{
  	    	int y = rand.nextInt(houseSize-1);
  	    	z = takenPositionFarm(x, y); 	
  	    	if(z == false) {
- 	    		Chicken chicken = new Chicken(x, y, this, players);
+ 	    		Chicken chicken = new Chicken(x, y, this, parents);
  	    		chicken.attachDeletable(this);
  	    	}
  	    }
@@ -260,18 +262,8 @@ public class Game implements DeletableObserver, Sounds{
 	}
 
 	public void useInventoryItem(int position) {
-    	try {
-    	Attachable inventoryItem = this.inventory.get(position);
-    	
-    	if(inventoryItem instanceof Activable) {
-    		((Activable) inventoryItem).activate();
-    		this.inventory.remove(inventoryItem);
-    		notifyView();
-    		}
-    	}
-    	catch(Exception e) {
-    		System.out.println("SORRY CANT DO THAT");
-    	}
+    	getActive_player().useInventoryItem(position);
+    	notifyView();
     }
     
     public boolean onGraphicalObject(int X, int Y) {
@@ -287,95 +279,135 @@ public class Game implements DeletableObserver, Sounds{
     	}
     
     int i = 0;
+    
     public void movePlayer(int x, int y) {
 	        int nextX = active_player.getPosX() + x;
 	        int nextY = active_player.getPosY() + y;
-	 
-	        boolean decider = false;
-	        for(Player player: players) {
-	        	if(player != active_player) {
-	        	if(player.getPosX() == nextX && player.getPosY() == nextY) {
-	        		decider = true;
-	        	}
-	        }
-	      }
-	        
-	        if(!this.mapChanger && !decider) {
-	        //
-	        boolean obstacle = false;
-	        for (GameObject object : objects) {
-	        	if (object instanceof OversizedObject) {
-	        		if(((OversizedObject) object).isInObjectSpace(nextX, nextY) == true){
-	        			obstacle = object.isObstacle();
-	        		}
-	        	}
-	        	
-	        	else if (object.isAtPosition(nextX, nextY)) {
-	                 obstacle = object.isObstacle();    	
-	        		}
-	            
-	            if (obstacle == true) {
-	                break; 
-	            }  
-	        }
-	        
-	        if (teleport1.isAtPosition(nextX, nextY)){
-    			EnableFarm();
-    			active_player.setIsInFarm();
-    			active_player.setPosX(22); active_player.setPosY(22);
-    		}
-	        
-	        //
-	        boolean z = onGraphicalObject(nextX, nextY);
-	        active_player.rotate(x, y); 
-	        if (obstacle == true || z == true) {
-	            decider = true;
-	        }
+	        boolean bool = false;
+	        active_player.rotate(x, y);
 	        notifyView();
+	        
+	        if(!this.mapChanger) {
+		        teleport(nextX, nextY, true);
+		        boolean bool1 = playerIsObstacle(nextX, nextY, true);
+		        boolean bool2 = objectIsObstacle(nextX, nextY);
+		        boolean bool3 = onGraphicalObject(nextX, nextY);
+		        if (bool2||bool3||bool1) {
+		            bool = true;
+		        }
 	        }
 	        
-	        else if(this.mapChanger  && !decider) {
-	        	for (FarmGameObjects farmObject : farmObjects) {
-	            	if (farmObject.isAtPosition(nextX, nextY)) {
-	            		decider = farmObject.isObstacle();
-	            	}
-	            
-	                if (decider == true) {
-	                    break; 
-	                }  
-	        	}
-	        	if (teleport1.isAtPosition(nextX, nextY)){
-	    			DisableFarm();
-	    			active_player.setIsNotInFarm();
-	    			active_player.setPosX(22); active_player.setPosY(22);
-	    		}
-	        	   
+	        else {
+	        	teleport(nextX, nextY, false);
+	        	boolean bool1F = playerIsObstacle(nextX, nextY, false);
+	        	boolean bool4 = farmObjectIsObstacle(nextX, nextY);
+	        	if (bool1F||bool4) {
+		            bool = true;
+		        }	   
 	       }
 	        active_player.rotate(x, y); 
-	        if (decider == false) {
+	        if (bool == false) {
 	            active_player.move(x, y);
 	            notifyView(); 
 	        		} 
-    	  
+	        //makePlayerDirty();
+	        //makePlayerHungry();
+	        //makePlayerTired();
    }
 
+	private void teleport(int nextX, int nextY, boolean b) {
+		if (teleport1.isAtPosition(nextX, nextY)){
+			if(b == true && !aPlayerInFarm()) {
+				EnableFarm();
+				active_player.setIsInFarm();
+			}
+			else {
+				DisableFarm();
+				active_player.setIsNotInFarm();
+			}
+			active_player.setPosX(22); active_player.setPosY(22);
+		}
+	}
+	
+	public boolean aPlayerInFarm() {
+		boolean bool = false;
+		for(Player player : players) {
+			if(player.isInFarmState()) {
+				System.out.println("lalalla");
+				bool = true;
+				break;
+			}
+		}
+		return bool;
+	}
 
-    
-    public int getPlayerX() {
-    	return this.active_player.getPosX();
+	private boolean farmObjectIsObstacle(int nextX, int nextY) {
+    	boolean bool = false;
+    	for (FarmGameObjects farmObject : farmObjects) {
+        	if (farmObject.isAtPosition(nextX, nextY)) {
+        		bool = farmObject.isObstacle();
+        	}
+        
+            if (bool == true) {
+                break; 
+            }  
+    	}
+    	
+    	return bool;	
+	}
+
+	private boolean playerIsObstacle(int nextX, int nextY, boolean b) {
+    	boolean bool = false;
+        for(Player player: players) {
+        	if(player != getActive_player()) {
+        		if( (b && !player.isInFarmState()) || (!b && (player.isInFarmState())) ) {	
+        			if(player.getPosX() == nextX && player.getPosY() == nextY) {
+        				bool = true;
+        			}
+	        	}
+        	}	
+        }
+		return bool;
+	}
+
+	private boolean objectIsObstacle(int nextX, int nextY) {
+    	
+    	boolean obstacle = false;
+        for (GameObject object : objects) {
+        	if (object instanceof OversizedObject) {
+        		if(((OversizedObject) object).isInObjectSpace(nextX, nextY) == true){
+        			obstacle = object.isObstacle();
+        		}
+        	}
+        	
+        	else if (object.isAtPosition(nextX, nextY)) {
+                 obstacle = object.isObstacle();    	
+        		}
+            
+            if (obstacle == true) {
+                break; 
+            }  
+        }
+        
+        return obstacle;
+		
+	}
+
+	public int getPlayerX() {
+    	return this.getActive_player().getPosX();
     }
     
     public int getPlayerY() {
-    	return this.active_player.getPosY();
+    	return this.getActive_player().getPosY();
     }
     
-    public void tirePlayer() {
-    	active_player.tire();
+    public void makePlayerTired() {
+    	getActive_player().tire();
     	notifyView();
     }
     
     public void makePlayerHungry() {
-    	active_player.beHungry();
+    	getActive_player().beHungry();
     	notifyView();
     }
     
@@ -383,22 +415,23 @@ public class Game implements DeletableObserver, Sounds{
     	int X = getPlayerDirectionVector().get(0);
     	int Y = getPlayerDirectionVector().get(1);
     	
-    	int FrontX = active_player.getPosX() + X;
-    	int FrontY = active_player.getPosY() + Y;
+    	int FrontX = getActive_player().getPosX() + X;
+    	int FrontY = getActive_player().getPosY() + Y;
    
     if(mapChanger == false) {
-	for (GameObject object : objects) {
-        if (object.isAtPosition(FrontX, FrontY)) {
-        	if(object instanceof Attachable) {
-            	if(inventory.size() < 4) {
-            		inventory.add((Attachable) object);
-            		playSound("Resources/Sounds/zipper.wav");
-            		objects.remove(object);
-            		notifyView();
-                	break; }
-            	}
-        	}
-        }
+		for (GameObject object : objects) {
+	        if (object.isAtPosition(FrontX, FrontY)) {
+	        	if(object instanceof Attachable) {
+	        			if(getActive_player().getinventory().size() < 4) {
+		        			((Attachable) object).assignPlayer(getActive_player());
+		            		getActive_player().addToInventory((Attachable) object);
+		            		playSound("Resources/Sounds/zipper.wav");
+		            		objects.remove(object);
+		            		notifyView();
+	                	break; }
+	            	}
+	        	}
+	        }
    }
    else {
 	   //TODO
@@ -407,16 +440,16 @@ public class Game implements DeletableObserver, Sounds{
     
     public void action() {
 	        Activable aimedObject = null;
-	        if(mapChanger == false) {//initianliser aimedobject a null et puis on changera si un peu (dnas le deuxieme if) 
+	        if(mapChanger == false) {
 			for(GameObject object : objects){
 				
 				if(object instanceof OversizedObject) {
-					boolean z = ObstacleIsOversizedObject((OversizedObject) object,active_player.getFrontX() , active_player.getFrontY());
+					boolean z = ObstacleIsOversizedObject((OversizedObject) object,getActive_player().getFrontX() , getActive_player().getFrontY());
 					if(z == true) {
 						aimedObject = (Activable) object;
 					}
 				}
-				else if(object.isAtPosition(active_player.getFrontX(),active_player.getFrontY())){
+				else if(object.isAtPosition(getActive_player().getFrontX(),getActive_player().getFrontY())){
 				    if(object instanceof Activable){
 				        aimedObject = (Activable) object; 
 				    }
@@ -426,14 +459,14 @@ public class Game implements DeletableObserver, Sounds{
 	        
 	        else {
 	        	for(FarmGameObjects farmObject : farmObjects) {
-	    			if(farmObject.isAtPosition(active_player.getFrontX(),active_player.getFrontY())) {
+	    			if(farmObject.isAtPosition(getActive_player().getFrontX(),getActive_player().getFrontY())) {
 	    				if(farmObject instanceof Activable) {
-	    					System.out.println("LEK YA AYRE");
 	    					aimedObject = (Activable) farmObject;
 	    				}
 	    			}
 	    		}
 	        }
+	        
 			if(aimedObject != null){ 
 			    aimedObject.activate();
 	            notifyView();
@@ -468,8 +501,8 @@ public class Game implements DeletableObserver, Sounds{
     	return this.inventory;
     }
     
-    public static Player getPlayer() {
-    	return active_player;
+    public Player getPlayer() {
+    	return getActive_player();
     }
     public void addPlayerToSleepingObjects(Player p) {
     	this.SleepingObject.add(p);
@@ -490,8 +523,8 @@ public class Game implements DeletableObserver, Sounds{
     	players.remove(p);
 		for(Player player: players) {
 			if(!(player.isDead())){
-				active_player = player;
-				window.setPlayer(active_player);
+				setActive_player(player);
+				window.setPlayer(getActive_player());
 				break;
 			}
 		}
@@ -519,7 +552,7 @@ public class Game implements DeletableObserver, Sounds{
 
 
     public void playerPos() {
-        System.out.println(active_player.getPosX() + ":" + active_player.getPosY());
+        System.out.println(getActive_player().getPosX() + ":" + getActive_player().getPosY());
         
     }
 
@@ -528,14 +561,10 @@ public class Game implements DeletableObserver, Sounds{
 	}
 
 
-	public void sendPlayer(int x, int y) {
-		Thread t = new Thread(new AStarThread(this, active_player, x,  y));
-		t.start();
-	}
 	
 	public ArrayList<Integer> getPlayerDirectionVector() {
 		ArrayList<Integer> arl = new ArrayList<Integer>();		
-		int intDirection = this.active_player.getDirection();
+		int intDirection = this.getActive_player().getDirection();
 		if(intDirection == 0) {
 			arl.add(1);
 			arl.add(0);
@@ -556,8 +585,11 @@ public class Game implements DeletableObserver, Sounds{
 	}
 
 	public void setEndGame() {
+		int chickenKilled = Chicken.getChickenKilled();
+		Saver saver =  new Saver(chickenKilled);
 		players = null;
-		Restart restart = new Restart("GameOver");
+		window.dispose();
+		Restart restart = new Restart();
 		endGame = true;
 	}
 	
@@ -569,13 +601,15 @@ public class Game implements DeletableObserver, Sounds{
 		Chicken.setChickenDamage(difficulity);
 	}
 	
-	public void removeMoneyFromPlayer(int Money) {
-		active_player.buy(Money);
+	public void removeMoneyFromPlayer(String buttonx) {
+		getActive_player().buy(buttonx);
 		notifyView();
 		}
 
 	public void setPlayerWeapon() {
-		active_player.changeWeapon();
+		if(getActive_player() instanceof Parent) {
+			((Parent) getActive_player()).changeWeapon();
+		}
 		notifyView();
 		}
 	
@@ -600,19 +634,59 @@ public class Game implements DeletableObserver, Sounds{
 	public void changePlayer() {
 		int size = players.size();
 		for(Player player : players) {
-			if(active_player == player) {
+			if(getActive_player() == player) {
 				int index = players.indexOf(player) + 1;
 				if(index != size) {
-					active_player = players.get(index);
+					setActive_player(players.get(index));
 				}
 				else {
-					active_player = players.get(0);
+					setActive_player(players.get(0));
 				}
+				mapChanger = active_player.isInFarmState();
 				break;
 			}
 		}
-		window.setPlayer(active_player);
+		window.setPlayer(getActive_player());
 		notifyView();
+		
+	}
+
+	public void setComputerTimer(int waitCount, int difficulity) {
+		window.setComputerTimer(waitCount, difficulity);
+		notifyView();
+		
+	}
+
+	public void makePlayerDirty() {
+		getActive_player().beDirty();
+		notifyView();
+		
+	}
+
+	public void addObject(GameObject o) {
+		objects.add(o);
+		notifyView();
+		
+	}
+	
+	public static boolean getMapChanger() {
+		return mapChanger;
+	}
+
+	public Player getActive_player() {
+		return active_player;
+	}
+
+	public void setActive_player(Player active_player) {
+		this.active_player = active_player;
+	}
+
+
+	public void allPlayersEat(int energy, int satisfaction) {
+		for(Player player : players) {
+			player.addEnergy(energy);
+			player.addSatisfaction(satisfaction);
+		}
 		
 	}
 

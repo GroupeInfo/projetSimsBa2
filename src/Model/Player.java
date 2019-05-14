@@ -2,28 +2,23 @@ package Model;
 
 import java.util.ArrayList;
 
-public class Player implements Directable {
-
-    int energy = 100;
-    int Satisfaction = 100;
-    int hygiene = 100;
-    int direction = EAST;
-    int posX;
-    int posY;
-    int lifes = 100;
-    private ArrayList<AttackWeapon> Weapons;
-    boolean dead = false;
+public abstract class Player implements Directable {
+    private int energy = 100;
+    private int Satisfaction = 100;
+    private int hygiene = 100;
+    private int direction = EAST;
+    private int posX;
+    private int posY;
+    private int lifes = 100;
+    private boolean dead = false;
     private boolean SleepingState;
     private boolean isInFarm = false;
     private Game g;
     private String gender;
-    protected AttackWeapon currentWeapon = null;
-    protected AttackWeapon box ;
-    protected AttackWeapon shovel ;
-    protected AttackWeapon knife; 
-
-    private static int FamilyMoney = 250;
+    protected static int FamilyMoney = 250;
     private static int FamilyFood = 0;
+    protected ArrayList<Attachable> inventory;
+    
     
     public Player(int x, int y, Game g, String gender) {
         this.posX = x;
@@ -31,15 +26,7 @@ public class Player implements Directable {
         this.g = g;
         this.gender = gender;
         
-      this.Weapons = new ArrayList<AttackWeapon>();
-        
-      this.box =  new AttackWeapon(25, 1, 0);;
-      this.shovel = new AttackWeapon(50, 1, 50);;
-      this.knife = new AttackWeapon(100, 1, 150);;
-        
-      this.Weapons.add(box);
-      currentWeapon = this.box;
-       
+        this.inventory = new ArrayList<Attachable>();
     }
 
     public void move(int X, int Y) {
@@ -104,25 +91,23 @@ public class Player implements Directable {
     
     public int getFrontX() {
         int delta = 0;
-        //System.out.println(direction); //je voulais bien m'assurer que la direction est changé quand on clique space...
-        if (direction % 2 == 0){//si direction est  paire(donc est  east ou west voir Directable interface)
+        if (direction % 2 == 0){
             delta += 1 - direction;
         }
-        return this.posX + delta; //retourne la valeur en X de l'obstacle qu'il touche lorsqu'il bouge ouest ou est...
-        						//pas besoin de retourne en Y car on l'a connait... c'est la meme que celle du player.......
+        return this.posX + delta; 
         						
     }
 
     public int getFrontY() {
         int delta = 0; 
-        if (direction % 2 != 0){//si direction n'est pas paire(donc est nord ou sud voir Directable interface)
+        if (direction % 2 != 0){
             delta += direction - 2;
         }
         return this.posY + delta;
     }
     
     public double getEnergy() {
-    	return energy/100.0; //idem read next comment. (si retourne 1 donc on a BAR_Length * 1 = ans donc rectangle complet)
+    	return energy/100.0; 
     }
     
     public double getFamilyMoney() {
@@ -130,20 +115,9 @@ public class Player implements Directable {
     }
     
     public double getSatisfaction() {
-    	return Satisfaction/100.0; //sera utile pour dessiner le rectangle de Hunger dans GUI
+    	return Satisfaction/100.0; 
     }
     
-	public void tire() {
-		if (energy > 10) {
-			energy -= 10;
-		}
-	}
-	
-	public void beHungry() {
-		if(Satisfaction>10) {
-			Satisfaction -= 10;
-		}
-	}
 	
 	public void addMoney(int ExtraMoney) {
 		this.FamilyMoney = this.FamilyMoney + ExtraMoney;
@@ -159,67 +133,7 @@ public class Player implements Directable {
 		}
 	}
 	
-	 public String getCurrentWeapon() {
-	    	if (currentWeapon == box) {
-	    		return "box";
-	    	}
-	    	else if (currentWeapon == shovel){
-	    		return "shovel";
-	    	}
-	    	else {
-	    		return "knife";
-	    	}
-	    }
-	 
-	 public void buy(int Money) {
-		int sum = FamilyMoney - Money;
-		if(sum>=0) {
-				if(Money == this.shovel.getPrice()) {
-					if(!this.Weapons.contains(this.shovel)) {
-					this.Weapons.add(this.shovel);
-					FamilyMoney -= Money;
-					}
-				}
-				
-				else {
-					//if(!Weapons.contains(this.knife))
-					Weapons.add(knife);
-					FamilyMoney -= Money;
-				}		
-			}
-		}
-		
-	 public void changeWeapon() {
-			int index = Weapons.indexOf(currentWeapon) +1;
-			int size = Weapons.size();
-			System.out.println(size);
-			System.out.println(index);
-			try {
-			if(index != size) {
-				currentWeapon = Weapons.get(index);
-			     }
-			else {
-				currentWeapon = Weapons.get(0);
-			     }
-			}
-			catch(Exception e) {
-				System.out.println(e);
-			}
-			
-			finally{
-				System.out.println("Tip of the day : if you want a new Weapon, go to Shop!");
-			}
-			}
-		
 	
-	 
-	public int getPlayersWeaponForce() {
-    	return currentWeapon.getAttackForce();
-    }
-    
-    public int getPlayersWeaponRange() {
-    	return currentWeapon.getAttackRange();
-    }
     
     public int getLifePoints() {
     	return(lifes);
@@ -255,6 +169,10 @@ public class Player implements Directable {
 		}
 	}
 
+	public void buy(String buttonx) {
+		 
+		}
+		
 	public void setIsInFarm() {
 		isInFarm = true;	
 	}
@@ -267,7 +185,7 @@ public class Player implements Directable {
 		return isInFarm;
 	}
 
-	public void addHygene(int ExtraHygiene) {
+	public void addHygiene(int ExtraHygiene) {
 		int sum = this.hygiene + ExtraHygiene;
 		if((sum) <=100) {
 			hygiene += ExtraHygiene;
@@ -293,4 +211,67 @@ public class Player implements Directable {
 	public String getGender() {
 		return gender;
 	}
-}
+
+	public void addToInventory(Attachable object) {
+		this.inventory.add(object);
+		
+	}
+	public void useInventoryItem(int position) {
+    	try {
+    	Attachable inventoryItem = this.inventory.get(position);
+    	
+    	if(inventoryItem instanceof Usable) {
+    		((Usable) inventoryItem).use();
+    		this.inventory.remove(inventoryItem);
+    		}
+    	}
+    	catch(Exception e) {
+    		System.out.println("SORRY CANT DO THAT");
+    	}
+    }
+	
+	public ArrayList<Attachable> getinventory(){
+    	return this.inventory;
+    }
+
+	public void beDirty() {
+		if(hygiene > 1) {
+		hygiene -= 1;
+		}
+		if(hygiene == 1) {
+			if(lifes >0) {
+				lifes -=1;
+			}
+		}
+	}
+	public void tire() {
+		if (energy > 1) {
+			energy -= 1;
+		}
+		if(energy == 1) {
+			if(lifes >0) {
+				lifes -=1;
+			}
+		}
+	}
+	
+	public void beHungry() {
+		if(Satisfaction > 1) {
+			Satisfaction -= 1;
+		}
+		if(Satisfaction == 1) {
+			if(lifes >0) {
+				lifes -=1;
+			}
+		}
+	}
+
+	public void decreaseFamilyFood() {
+		FamilyFood -= 300;
+		
+	}
+	
+  } 
+	
+	
+	
